@@ -1,0 +1,102 @@
+﻿@model VVV.UI.ViewModels.Verlofaanvraag.EditModel
+@using VVV.UI.Helpers;
+@{
+    ViewBag.Title = "RejectRequest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .error {
+        border: 1px solid #b94a48 !important;
+        background-color: #fee !important;
+    }
+</style>
+
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    using (Html.BeginForm("RejectRequest", "Verlofaanvraag", FormMethod.Post, new { @class = "form-horizontal" }))
+    {    
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.VacationID)
+        <div class="col-md-12 row">
+
+            <div class="col-md-12 headerkembit">
+                <div class="col-md-12">
+                    <h3><strong>Verlofverzoek afwijzen</strong></h3>
+                    <hr />
+                </div>
+            </div>
+
+            <form>
+                <div class="col-md-12 containerkembit">
+                    <div class="col-md-12">
+                        <h4><strong>Reden van afwijzing *</strong></h4>
+                        @Html.EditorFor(model => model.RejectionReason, new { htmlAttributes = new { @class = "form-control", @id = "OnlyText", placeholder = "Reden van de afwijzing", data_msg_required = "Vul de reden van uw verlofverzoek in.", data_rule_required = "true" } })
+                    </div>
+
+                </div>
+
+            </form>
+
+            
+
+            <div class="col-md-12 headerkembit">
+                <div class="col-md-6">
+                    <button type="submit" style="width:100%;" class="btn btn-success buttonkembit"><i class="fa fa-angle-double-left"></i> Opslaan</button>
+                </div>
+                <div class="col-md-6">
+                    <a class="btn btn-default buttonkembit" style="width:100%;" href="@Url.Action("AssessRequestManager", "Verlofaanvraag", new { id = Model.VacationID })"><i class="fa fa-angle-double-left"></i>Annuleren</a>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+
+@section scripts{
+    <script src="//ajax.aspnetcdn.com/ajax/jQuery.validate/1.11.1/jquery.validate.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $("#OnlyText").keypress(function (e) {
+            if (e.which < 65 /* a */ || e.which > 90 /* z */) {
+                if (e.which > 96 && e.which < 123) {
+                    return true;
+                }
+                else if (e.which == 46 || e.which == 33 || e.which == 44 || e.which == 32 || e.which == 8 || e.which == 63) {
+                    return true;
+                }
+                /*Numbers 0 - 9*/
+                else if (e.which > 47 && e.which < 59) {
+                    return true;
+                }
+                else {
+                    e.preventDefault();
+                }
+
+            }
+        });
+
+        $("form").validate({
+
+            showErrors: function (errorMap, errorList) {
+                // Clean up any tooltips for valid elements
+                $.each(this.validElements(), function (index, element) {
+                    var $element = $(element);
+                    $element.data("title", "") // Clear the title - there is no error associated anymore
+                        .removeClass("error")
+                        .tooltip("destroy");
+                });
+                // Create new tooltips for invalid elements
+                $.each(errorList, function (index, error) {
+                    var $element = $(error.element);
+                    $element.tooltip("destroy") // Destroy any pre-existing tooltip so we can repopulate with new tooltip content
+                        .data("title", error.message)
+                        .addClass("error")
+                        .tooltip(); // Create a new tooltip based on the error messsage we just set in the title
+                });
+            },
+        });
+    </script>
+    
+    }

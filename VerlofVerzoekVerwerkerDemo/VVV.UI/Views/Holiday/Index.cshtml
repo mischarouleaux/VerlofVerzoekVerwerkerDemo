@@ -1,0 +1,132 @@
+﻿@model VVV.UI.ViewModels.Holidays.IndexModel
+@using VVV.UI.Helpers;
+@using PagedList.Mvc;
+
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+ 
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    @Html.AntiForgeryToken()
+
+
+
+    <div class="col-md-12 row">
+
+        <div class="col-md-12">
+            <div class="col-md-12 headerkembit">
+                <div class="col-md-12">
+                    <h3><strong>Overzicht feestdagen</strong></h3>
+                </div>
+                <div class="col-md-12">
+                    <hr />
+                </div>
+            </div>
+        </div>
+
+        @if (Model.HasSavedMessage == true)
+        {
+            <div class="col-md-12">
+                <div class="rounded alert alert-success">
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Feestdag is opgeslagen!</h4></i>
+                </div>
+            </div>
+
+        }
+        @if (Model.HasChangedMessage == true)
+        {
+            <div class="col-md-12">
+                <div class="rounded alert alert-success">
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Wijziging is opgeslagen!</h4></i>
+                </div>
+            </div>
+
+        }
+        @if (Model.HasDeleteMessage == true)
+        {
+            <div class="col-md-12">
+                <div class="rounded alert alert-danger">
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Feestdag is verwijderd!</h4></i>
+                </div>
+            </div>
+
+        }
+
+        <div class="col-md-12">
+            <div class="col-md-12 headerkembit">
+                <a class="btn btn-success" style="width:100%;" href="@Url.Action("Create", "Holiday")"><i class="fa fa-angle-double-left"></i>Feestdag maken</a>
+            </div>
+        </div>
+        
+        
+
+        <div class="col-md-12">
+            @if (Model.Holidays.Count > 0)
+                {
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped col-md-12" style="background-color:white; border:1px solid #e6e6e6;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Beschrijving
+                                </th>
+                                <th>
+                                    Datum
+                                </th>
+                                <th></th>                                
+                            </tr>
+                        </thead>
+
+                        @foreach (var item in Model.Holidays)
+                        {
+                            <tbody>
+                                <tr class="table-hover" onclick="location.href = '@(Url.Action("Edit", "Holiday", new { id = item.HolidayID }))'">
+                                    <td>
+                                        @item.Description
+                                    </td>
+                                    <td>
+                                        @item.Date.Date.Day / @item.Date.Date.Month / @item.Date.Date.Year
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink(" ", "Delete", "Holiday", new { id = item.HolidayID }, new { @class = "btn btn-danger glyphicon glyphicon-trash pull-right" })                                        
+                                    </td>                                   
+                                </tr>
+                            </tbody>
+                        }
+                    </table>
+                </div>
+                    
+
+            }
+
+
+
+            <div>
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; margin-bottom:20px;">
+                    @if (Model.Holidays.Count <= 0)
+                    {
+                        <div class="col-md-12">
+                            <h3>Er zijn geen feestdagen bekend in de applicatie</h3>
+                            <hr>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+}
+

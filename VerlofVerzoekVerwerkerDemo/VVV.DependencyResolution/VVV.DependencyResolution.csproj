@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8752ACEE-F412-4D78-B449-5944903F279D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VVV.DependencyResolution</RootNamespace>
+    <AssemblyName>VVV.DependencyResolution</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=4.2.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.2.1\lib\net45\Autofac.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BusinessServiceModule.cs" />
+    <Compile Include="InfrastructureModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VVV.Business\VVV.Business.csproj">
+      <Project>{af60e891-af34-477e-af25-6819a439ef78}</Project>
+      <Name>VVV.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VVV.EF\VVV.EF.csproj">
+      <Project>{8fc4d8a7-7ff5-4e5c-86a0-db73d0d7d5e3}</Project>
+      <Name>VVV.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VVV.Interfaces\VVV.Interfaces.csproj">
+      <Project>{173825eb-8dfc-429a-9b7f-6114e5bc264a}</Project>
+      <Name>VVV.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VVV.Models\VVV.Models.csproj">
+      <Project>{d5399024-84aa-40b3-bb82-e4ae6e9dfeb1}</Project>
+      <Name>VVV.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

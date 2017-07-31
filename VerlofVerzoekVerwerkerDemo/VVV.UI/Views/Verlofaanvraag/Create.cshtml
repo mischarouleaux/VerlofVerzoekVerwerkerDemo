@@ -1,0 +1,335 @@
+﻿@model VVV.UI.ViewModels.Verlofaanvraag.EditModel
+@using VVV.UI.Helpers;
+
+@{
+    ViewBag.Title = "Verlof aanvragen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .error { border: 1px solid #b94a48!important; background-color: #fee!important; }
+    .datepicker {background-color:white !important;}
+</style>
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    using (Html.BeginForm("Create", "Verlofaanvraag", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(p => p.previousUrl)
+        
+        
+        <div class="col-md-12 row">
+            <div class="col-md-12">
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:4% 5% 2% 5%; margin-bottom:20px;">
+                    <h3><strong>VerlofVerzoek maken</strong></h3>
+                    <hr />
+                </div>
+            </div>
+            
+
+            @*
+            @if ((Model.Days <= 0 && Model.Hours <= 0 && Model.Minutes <= 0))
+            {
+                <div class="col-md-12">
+                    <div class="rounded alert alert-danger">
+                        <i class="fa fa-danger"><h5>U heeft geen verlofdagen meer over!</h5></i>
+                    </div>
+                </div>
+  
+            }
+            *@
+            
+            <div class="col-md-12">
+                <i class="fa fa-danger">@Html.Partial("Partials/_Message")</i>
+            </div>
+            
+
+
+            <form>
+                <div class="col-md-8">
+                    <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:5% 5% 5% 5%; margin-bottom:20px;">
+                        <div class="form-group">
+                            <label class="col-md-5 control-label" style="text-align:left;">Reden van het verlof *</label>
+
+                            <div class="col-md-7">
+                                @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @id = "OnlyText", @type = "text", placeholder = "Reden", @maxlength = "50", data_msg_required = "Vul de reden van uw verlofverzoek in.", data_rule_required = "true" } })
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label" style="text-align:left;">Pak hele dagen vrij *</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.CompleteDays, new { htmlAttributes = new { @class = "checkbox" }, id = "CompleteDays" })
+                            </div>
+                        </div>
+                        
+
+                        
+                            <div class="form-group" id="BeginTime">
+                                <label class="col-md-5 control-label" style="text-align:left;">Begintijd van uw verlof *</label>
+                                <div class="col-md-7">
+                                    @Html.EditorFor(p => p.BeginTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige begintijd van uw verlofverzoek in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+
+                                </div>
+                            </div>
+                        
+
+                        <div class="form-group" style="margin-bottom:25px;" id="BeginDate">
+                            <label class="col-md-5 control-label" style="text-align:left;">Begindatum van uw verlof *</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.BeginDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "startDate", data_msg_required = "Vul een geldige begindatum van uw verlofverzoek in.", data_rule_required = "true" } })
+
+                            </div>
+                        </div>
+
+                        
+
+                        
+                        <div class="form-group" id="EndTime">
+                            <label class="col-md-5 control-label" style="text-align:left;">Eindtijd van uw verlof *</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.EndTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw verlofverzoek in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                            </div>
+                        </div>
+                        
+
+                        <div class="form-group" style="margin-bottom:25px;" id="EndDate">
+                            <label class="col-md-5 control-label" style="text-align:left;">Einddatum van uw verlof *</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.EndDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "endDate", data_msg_required = "Vul een geldige einddatum van uw verlofverzoek in.", data_rule_required = "true" } })
+                            </div>
+                        </div>
+
+                        
+                        <div class="form-group" id="UserBeginTime">
+                            <label class="col-md-5 control-label" style="text-align:left;">Begin van uw werkdag *</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.UserBeginTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw werkdag in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                            </div>
+                        </div>
+                        
+
+                        
+                        <div class="form-group" id="UserEndTime">
+                            <label class="col-md-5 control-label" style="text-align:left;">Einde van uw werkdag *</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.UserEndTime, new { htmlAttributes = new { @class = "form-control",  data_msg_required = "Vul een geldige eindtijd van uw werkdag in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom:25px;">
+                            <label class="col-md-5 control-label" style="text-align:left;">Heeft dit overlegd met uw team?</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.IsCommunicated, new { htmlAttributes = new { @class = "checkbox" } })
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom:25px;">
+                            <label class="col-md-5 control-label" style="text-align:left;">Heeft u deadlines in de verlofperiode?</label>
+                            <div class="col-md-7">
+                                @Html.EditorFor(p => p.HasDeadlines, new { htmlAttributes = new { @class = "checkbox" } })
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-success col-md-6" style="margin-top:10px; width:100%;"><i class="fa fa-save"></i> Opslaan</button>
+                        </div>
+                        <div class="col-md-6">
+                            <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Model.previousUrl"><i class="fa fa-angle-double-left"></i>Annuleren</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+
+            
+                
+            <div class="col-md-4" >
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; margin-bottom:10px;">
+                    @*
+                    <div class="col-md-12" style="text-align:right; margin-bottom:10px;">
+                        <hr />
+                        <h5><strong>Huidige verlofdagen</strong></h5>
+                        <p>@Model.Time</p>
+                    </div>
+                    *@
+
+                    <div class="col-md-12" style="text-align:right;">
+                        <hr />
+                        <h5><strong>Beoordelende manager</strong></h5>
+                        <p>@Model.CurrentManager.FirstName @Model.CurrentManager.LastName</p>
+
+                        <hr />
+                    </div>
+
+                    @if (Model.HasSecondManager == true)
+                    {
+                        <div class="col-md-12" style="text-align:right;">
+
+                            <h5><strong>2e beoordelende manager</strong></h5>
+                            <p>@Model.SecondManager.FirstName @Model.SecondManager.LastName</p>
+
+                            <hr />
+                        </div>
+                    }
+                </div>
+                    
+            
+                
+            </div>
+            
+        </div>
+    }
+}
+
+@section scripts{
+    
+    
+    <script type="text/javascript">
+        $("#startDate").on('change', function () {
+            var startValue = $("#startDate").val();
+            var endValue = $("#endDate").val();
+
+            if (endValue < startValue)
+            {
+                $("#endDate").val(startValue);
+            }
+            else{return}
+        });
+
+        $("#OnlyText").keypress(function (e) {            
+            if (e.which < 65 /* a */ || e.which > 90 /* z */) {
+                if (e.which > 96 && e.which < 123)
+                {
+                    return true;
+                }
+                else if (e.which == 46 || e.which == 33 || e.which == 44 || e.which == 32 || e.which == 8 || e.which == 63) {
+                    return true;
+                }
+                    /*Numbers 0 - 9*/
+                else if (e.which > 47 && e.which < 59)
+                {
+                    return true;
+                }
+                else {
+                    e.preventDefault();
+                }                
+               
+            }
+        });
+
+        $(function () {
+            var _startDate = new Date();
+            $('#startDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayBtn: "linked",
+                language: "nl",
+                daysOfWeekDisabled: "0,6",
+                daysOfWeekHighlighted: "1,2,3,4,5",
+                calendarWeeks: true,
+                todayHighlight: true
+
+            });
+            
+        });
+        
+        $(function () {
+            var _startDate = new Date();
+            $('#endDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayBtn: "linked",
+                language: "nl",
+                daysOfWeekDisabled: "0,6",
+                daysOfWeekHighlighted: "1,2,3,4,5,",
+                calendarWeeks: true,
+                todayHighlight: true,
+                
+            });
+        });
+        
+       
+
+        function Hide() {
+            if ($('#CompleteDays').is(':checked')) {
+                $('#BeginTime').hide();
+                $('#EndTime').hide();
+                $('#UserBeginTime').hide();
+                $('#BeginTime').hide();
+                $('#UserEndTime').hide();
+                
+                
+            }
+        }
+
+        function CompleteDays() {
+            $("#CompleteDays").bind('click', function () {
+                if ($(this).is(':checked')) {
+                    $('#BeginTime').fadeOut();
+                    $('#EndTime').fadeOut();
+                    $('#UserBeginTime').fadeOut();
+                    $('#UserEndTime').fadeOut();
+                    $('#HasBreak').fadeOut();
+                    
+                    
+                }
+                else {
+                    $('#BeginTime').fadeIn();
+                    $('#EndTime').fadeIn();
+                    $('#UserBeginTime').fadeIn();
+                    $('#UserEndTime').fadeIn();
+                   
+                    
+                }
+            });
+        }
+
+        
+
+        $(document).ready(function () {
+            Hide()
+            CompleteDays()
+        });
+
+        
+
+        $.validator.addMethod("timespan", function (value, element) {
+            if (!/^\d{2}:\d{2}$/.test(value)) return false;
+            var parts = value.split(':');
+            if (parts[0] < 8) {
+                return false;
+            }
+
+            else if (parts[0] > 18 && parts[1] >= 01) {
+                return false;
+            }
+
+            return true;
+        });        
+
+        $("form").validate({
+            showErrors: function (errorMap, errorList) {
+                // Clean up any tooltips for valid elements
+                $.each(this.validElements(), function (index, element) {
+                    var $element = $(element);
+                    $element.data("title", "") // Clear the title - there is no error associated anymore
+                        .removeClass("error")
+                        .tooltip("destroy");
+                });
+                // Create new tooltips for invalid elements
+                $.each(errorList, function (index, error) {
+                    var $element = $(error.element);
+                    $element.tooltip("destroy") // Destroy any pre-existing tooltip so we can repopulate with new tooltip content
+                        .data("title", error.message)
+                        .addClass("error")
+                        .tooltip(); // Create a new tooltip based on the error messsage we just set in the title
+                });
+            },
+        });
+
+        
+    </script>}

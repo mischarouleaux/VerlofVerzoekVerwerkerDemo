@@ -1,0 +1,85 @@
+﻿@model VVV.UI.ViewModels.Calendar.CalendarModel
+@using VVV.UI.Helpers;
+
+@{
+    ViewBag.Title = "MainCalendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+
+
+    <div class="col-md-12 row">
+        <div class="col-md-12">
+            <div class="col-md-12 headerkembit">
+                <div class="col-md-12">
+                    <h3><strong>IT Applications agenda</strong></h3>
+                    <hr />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="col-md-12 submenu">
+                <a class="btn btn-default btnkembit buttonkembit" style="width:100%;" href="@Url.Action("MainCalendar", "Calendar")"><i class="fa fa-angle-double-left"></i>Algemeen</a>
+                <hr />
+                <a class="btn btn-default btnkembit buttonkembit" style="width:100%;" href="@Url.Action("ApplicationsCalendar", "Calendar", new { departmentid = Model.ApplicationID })"><i class="fa fa-angle-double-left"></i>IT Applications</a>
+                <a class="btn btn-default btnkembit buttonkembit" style="width:100%;" href="@Url.Action("ServicesCalendar", "Calendar", new { departmentid = Model.ServicesID })"><i class="fa fa-angle-double-left"></i>IT Services</a>
+                <a class="btn btn-default btnkembit buttonkembit" style="width:100%;" href="@Url.Action("ConsultancyCalendar", "Calendar", new { departmentid = Model.ConsultancyID })"><i class="fa fa-angle-double-left"></i>IT Consultancy</a>
+                <a class="btn btn-default btnkembit buttonkembit" style="width:100%;" href="@Url.Action("KnowledgeCalendar", "Calendar", new { departmentid = Model.KnowledgeID })"><i class="fa fa-angle-double-left"></i>IT Knowledge</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-12 containerkembit">
+                <div class="col-md-12" id="calendar"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next,today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+
+
+                navLinks: true,
+                editable: false,
+                eventLimit: true,
+                events: "@Url.Action("GetSelectedEvents", "Calendar", new { departmentid = Model.ApplicationID})",
+                timeFormat: 'HH:mm',
+                weekends: false,
+                businessHours: {
+                    dow: [1, 2, 3, 4, 5],
+                    start: '08:00',
+                    end: '18:00',
+                },
+                dayNames: ['Zo', 'ma', 'di', 'woe', 'do', 'vrij'],
+                firstDay: 1,
+                locale: 'nl',
+                columnFormat: 'dddd',
+                buttonText: {
+                    today: 'Vandaag',
+                    month: 'Maand',
+                    week: 'Week',
+                    day: 'Dag',
+                    list: 'Lijst'
+                },
+                allDayText: 'Hele dagen',
+                slotLabelFormat: 'HH:mm'
+
+
+
+            });
+        });
+    </script>}
+
+

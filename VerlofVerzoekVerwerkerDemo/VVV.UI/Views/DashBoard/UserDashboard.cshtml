@@ -1,0 +1,517 @@
+﻿@model VVV.UI.ViewModels.Dashboard.UserModel
+@using VVV.UI.Helpers;
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "UserDashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    <div class="col-md-12 row">
+        
+        <div class="col-md-12 headerkembit">
+            @foreach (var item in Model.currentuser)
+            {
+                <h3><strong>Dashboard</strong> <span style="font-size:small; font-style:italic;">van @item.FirstName @item.LastName</span></h3>
+            }
+            <hr />
+
+            @*<div class="col-md-8" style="margin-top:15px;">
+                
+            </div>*@
+
+            <div class="col-md-12" style="text-align:left;">
+                    <h5><b>Verlof dat nu plaatsvind</b></h5>
+                <hr />
+                    @if (Model.VacationRequestToday.Count > 0)
+                    {
+                        <table class="table table-responsive" >
+                            
+
+                            @foreach (var item in Model.VacationRequestToday)
+                            {
+                                <tr onclick="location.href = '@(Url.Action("Details", "Verlofaanvraag", new { id = item.VacationID }))'">
+                                    <td class="col-md-4">
+                                        @item.Reason
+                                    </td>
+
+                                @if (item.IsTotalDays == true)
+                                {
+                                    <td>
+                                        @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                    </td>
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                            </td>
+                                }
+
+                                @if (item.IsTotalDays == false)
+                                {
+                                    if (item.BeginDate.Minute < 10)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                                
+                                            </td>
+                                    }
+                                    if (item.BeginDate.Minute >= 10)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:@item.BeginDate.Minute
+                                        </td>
+                                    }
+
+                                    if (item.EndDate.Minute < 10)
+                                    {
+                                        <td>
+                                            @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                        </td>
+                                    }
+                                    if (item.EndDate.Minute >= 10)
+                                    {
+                                        <td>
+                                            @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:@item.EndDate.Minute
+                                        </td>
+                                    }
+                                }
+                                </tr>
+                            }
+                        </table>
+
+                        
+                    }
+                
+                @if (Model.VacationRequestToday.Count == 0)
+                {
+                    <div class="col-md-9">
+                        <h5><i>U heeft geen verlofverzoeken die nu plaatsvinden.</i></h5>
+
+                    </div>
+                }
+            </div>
+
+            @*<div class="col-md-4 hidden-xs hidden-sm" style="text-align:right;">
+                <h5><b>Resterende verlofuren</b></h5>
+                <hr />
+                    <table class="table table-responsive">
+                        <tr>
+                            <td>
+                                @Model.Time
+                            </td>
+                            
+                        </tr>
+                    </table>
+            </div>        
+            <div class="col-md-4 hidden-md hidden-lg" style="text-align:left;">
+                <h5><b>Resterende verlofuren</b></h5>
+                <hr />
+                <table class="table table-responsive">
+                    <tr>
+                        <td>
+                            @Model.Time
+                        </td>
+
+                    </tr>
+                </table>
+            </div>*@        
+        </div>
+
+        <div id="IndexMedewerker">
+            <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; text-align:center; margin-top:20px;">
+                <h4><strong>Eigen VerlofVerzoeken</strong></h4>
+            </div>
+            <div id="Accepted">
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; text-align:center;">
+                    <div class="col-md-12 btn btn-success" id="AcceptedButton" style="width:100%;">
+                        <h5>Geaccepteerde verlofverzoeken</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-12" id="TableAccepted" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; display:none;">
+                    <h5><span class="glyphicon glyphicon-ok-sign" style="color:green; margin-right:10px;"></span><b>Geaccepteerde verlofverzoeken</b></h5>
+                    @if (Model.VacationRequestAccepted.Count > 0)
+                    {
+                        <table class="table table-striped table-hover table-responsive">
+                            <tr>
+                                <th width="45%">
+                                    Reden
+                                </th>
+                                <th>
+                                    Begintijd
+                                </th>
+                                <th>
+                                    Eindtijd
+                                </th>
+                            </tr>
+
+                            @foreach (var item in Model.VacationRequestAccepted)
+                            {
+                                <tr class="table-hover" onclick="location.href = '@(Url.Action("Details", "Verlofaanvraag" , new { id=item.VacationID }))'">
+                                    <td>
+                                        @item.Reason
+                                    </td>
+
+                                    @if (item.IsTotalDays == true)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                        </td>
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                            </td>
+                                    }
+
+                                    @if (item.IsTotalDays == false)
+                                    {
+                                        if (item.BeginDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                            </td>
+                                        }
+                                        if (item.BeginDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:@item.BeginDate.Minute
+                                            </td>
+                                        }
+
+                                        if (item.EndDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                            </td>
+                                        }
+                                        if (item.EndDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:@item.EndDate.Minute
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                            <a style="text-align:right;" href="@Url.Action("AcceptedVacation", "Verlofaanvraag" )"><h6><i>Meer weergeven</i></h6></a>
+                    }
+                    @if (Model.VacationRequestAccepted.Count == 0)
+                    {
+                        <div class="col-md-9">
+                            <h5><i>U heeft geen verlofaanvragen die geaccepteerd zijn.</i></h5>
+
+                        </div>
+
+                            <hr />
+                    }
+                </div>
+            </div>
+            <div id="IndexRejected">
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; text-align:center;">
+                    <div class="col-md-12 btn btn-danger" id="RejectedButton" style="width:100%;">
+                        <h5>Afgewezen verlofverzoeken</h5>
+                    </div>
+                </div>
+
+
+                <div class="col-md-12" id="TableRejected" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; display:none;">
+                    <h5><span class="glyphicon glyphicon-remove-sign" style="color:red; margin-right:10px;"></span><b>Afgewezen verlofverzoeken</b></h5>
+                    @if (Model.VacationRequestRejected.Count > 0)
+                    {
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th width="30%">
+                                    Reden van afwijzing
+                                </th>
+                                <th width="30%">
+                                    Reden
+                                </th>
+                                
+                                <th>
+                                    Begintijd
+                                </th>
+                                <th>
+                                    Eindtijd
+                                </th>
+                            </tr>
+
+                            @foreach (var item in Model.VacationRequestRejected)
+                            {
+                                <tr class="table-hover" onclick="location.href = '@(Url.Action("Details", "Verlofaanvraag" , new { id=item.VacationID }))'">
+                                    <td>
+                                        @item.ReasonRejection
+                                    </td>
+                                    <td>
+                                        @item.Reason
+                                    </td>
+                                    
+
+                                    @if (item.IsTotalDays == true)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                        </td>
+                                                <td>
+                                                    @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                                </td>
+                                    }
+
+                                    @if (item.IsTotalDays == false)
+                                    {
+                                        if (item.BeginDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                            </td>
+                                        }
+                                        if (item.BeginDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:@item.BeginDate.Minute
+                                            </td>
+                                        }
+
+                                        if (item.EndDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                            </td>
+                                        }
+                                        if (item.EndDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:@item.EndDate.Minute
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                                <a style="text-align:right;" href="@Url.Action("RejectedVacation", "Verlofaanvraag" )"><h6><i>Meer weergeven</i></h6></a>
+                    }
+                    @if (Model.VacationRequestRejected.Count == 0)
+                    {
+                        <div class="col-md-9">
+                            <h5><i>U heeft geen verlofaanvragen die afgewezen zijn.</i></h5>
+
+                        </div>
+
+
+                                <hr />
+                    }
+                </div>
+            </div>
+            <div id="IndexInTreatment">
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; text-align:center;">
+                    <div class="col-md-12 btn btn-default" id="InTreatmentButton" style="width:100%;">
+                        <h5>Verlofverzoeken in behandeling</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-12" id="TableInTreatment" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; display:none;">
+                    <h5><span class="glyphicon glyphicon-transfer" style="margin-right:10px;"></span><b>Verlofverzoeken in behandeling</b></h5>
+                    @if (Model.VacationRequestInTreatment.Count > 0)
+                    {
+                        <table class="table table-striped table-hover">
+                            <tr>
+                                <th width="45%">
+                                    Reden
+                                </th>
+                                <th>
+                                    Begintijd
+                                </th>
+                                <th>
+                                    Eindtijd
+                                </th>
+                            </tr>
+
+                            @foreach (var item in Model.VacationRequestInTreatment)
+                            {
+                                <tr class="table-hover" onclick="location.href = '@(Url.Action("Details", "Verlofaanvraag" , new { id=item.VacationID }))'">
+                                    <td>
+                                        @item.Reason
+                                    </td>
+
+                                    @if (item.IsTotalDays == true)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                        </td>
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                            </td>
+                                    }
+
+                                    @if (item.IsTotalDays == false)
+                                    {
+                                        if (item.BeginDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                            </td>
+                                        }
+                                        if (item.BeginDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:@item.BeginDate.Minute
+                                            </td>
+                                        }
+
+                                        if (item.EndDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                            </td>
+                                        }
+                                        if (item.EndDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:@item.EndDate.Minute
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                            <a style="text-align:right;" href="@Url.Action("InTreatmentVacation", "Verlofaanvraag" )"><h6><i>Meer weergeven</i></h6></a>
+                    }
+                    @if (Model.VacationRequestInTreatment.Count == 0)
+                    {
+                        <div class="col-md-9">
+                            <h5><i>U heeft geen verlofaanvragen die in behandeling zijn.</i></h5>
+
+                        </div>
+
+
+                            <hr />
+                    }
+                </div>
+            </div>
+            <div id="IndexAssessRequest">
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; text-align:center;">
+                    <div class="col-md-12 btn btn-info" id="AssessRequestButton" style="width:100%;">
+                        <h5>Voorgestelde verlofverzoeken</h5>
+                    </div>
+                </div>
+
+                <div class="col-md-12" id="TableAssessRequest" style="background-color:white; border:1px solid #e6e6e6; padding:10px 10px 10px 10px; display:none;">
+                    <h5><span class="glyphicon glyphicon-refresh" style="margin-right:10px;"></span><b>Voorgestelde verlofverzoeken</b></h5>
+                    @if (Model.VacationRequestProposition.Count > 0)
+                    {
+                        <table class="table table-striped table-hover table-responsive">
+                            <tr>
+                                <th width="30%">
+                                    Reden
+                                </th>
+                                <th width="30%">
+                                    Reden van afwijzing
+                                </th>
+                                <th>
+                                    Begintijd
+                                </th>
+                                <th>
+                                    Eindtijd
+                                </th>
+                            </tr>
+
+                            @foreach (var item in Model.VacationRequestProposition)
+                            {
+                                <tr class="table-hover" onclick="location.href = '@(Url.Action("AssessRequest", "Verlofaanvraag" , new { id=item.VacationID }))'">
+                                    <td>
+                                        @item.Reason
+                                    </td>
+                                    <td>
+                                        @item.ReasonRejection
+                                    </td>
+
+                                    @if (item.IsTotalDays == true)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                        </td>
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                            </td>
+                                    }
+
+                                    @if (item.IsTotalDays == false)
+                                    {
+                                        if (item.BeginDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                            </td>
+                                        }
+                                        if (item.BeginDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:@item.BeginDate.Minute
+                                            </td>
+                                        }
+
+                                        if (item.EndDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                            </td>
+                                        }
+                                        if (item.EndDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:@item.EndDate.Minute
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
+                        </table>
+                            <a style="text-align:right;" href="@Url.Action("IndexManager", "Verlofaanvraag" )"><h6><i>Meer weergeven</i></h6></a>
+                    }
+                    @if (Model.VacationRequestProposition.Count == 0)
+                    {
+                        <div class="col-md-9">
+                            <h5><i>U heeft geen verlofaanvragen die voorgesteld zijn.</i></h5>
+
+                        </div>
+
+                            <hr />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#IndexManagerButton").click(function () {
+                $("#TableVacationRequestUsers").slideToggle("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#AcceptedButton").click(function () {
+                $("#TableAccepted").slideToggle("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#RejectedButton").click(function () {
+                $("#TableRejected").slideToggle("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#InTreatmentButton").click(function () {
+                $("#TableInTreatment").slideToggle("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#AssessRequestButton").click(function () {
+                $("#TableAssessRequest").slideToggle("slow");
+            });
+        });
+    </script>}

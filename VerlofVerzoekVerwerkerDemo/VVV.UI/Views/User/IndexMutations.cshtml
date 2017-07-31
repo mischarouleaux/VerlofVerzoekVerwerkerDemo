@@ -1,0 +1,137 @@
+﻿@model VVV.UI.ViewModels.User.MutationsModel
+@using VVV.UI.Helpers;
+@using PagedList.Mvc;
+
+
+@{
+    ViewBag.Title = "IndexMutations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    @Html.AntiForgeryToken()
+    
+
+    <div class="col-md-12 row">
+
+        
+            <div class="col-md-12">
+                <div class="col-md-12 headerkembit">
+                    <div class="col-md-12">
+                        <h3><strong>Overzicht veranderingen in verlofdagen</strong></h3>
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-12">
+                @if (Model.Mutations.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" style="background-color:white; border:1px solid #e6e6e6;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Verandering in dagen
+                                    </th>
+                                    <th>
+                                        Verandering in uren
+                                    </th>
+                                    <th>
+                                        Tijd opgeslagen
+                                    </th>
+                                    <th>
+                                        Gebruiker
+                                    </th>
+                                    <th>
+                                        Verlofverzoek
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            @foreach (var item in Model.Mutations)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            @{
+                                                int days = item.VacationModification / 480;
+                                                int hours = (item.VacationModification % 480) / 60;
+                                                int minutes = (item.VacationModification % 480) % 60;
+                                            }
+                                            @days Dagen, @hours uur &amp; @minutes minuten
+                                        </td>
+                                        <td>
+                                            @{
+                                                int hour = item.VacationModification / 60;
+                                                int minute = item.VacationModification % 60;
+                                            }
+                                            @hour uur &amp; @minute minuten
+                                        </td>
+                                        <td>
+                                            @item.DateCreated.Day / @item.DateCreated.Month / @item.DateCreated.Year,  
+                                            @if (item.DateCreated.Hour < 10)
+                                            {
+                                                <span>0@**@@item.DateCreated.Hour:</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.DateCreated.Hour:</span>
+                                            }
+                                            @if (item.DateCreated.Minute < 10)
+                                            {
+                                                <span>0@**@@item.DateCreated.Minute</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.DateCreated.Minute</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @item.ApplicationUser1.FirstName @item.ApplicationUser1.LastName
+                                        </td>
+                                        <td>
+                                            @if (item.VacationID != null)
+                                            {
+                                                <button class="btn" onclick="location.href='@(Url.Action("Details", "Verlofaanvraag", new { id = item.VacationID}))'">
+                                                    Naar verlofverzoek
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn" disabled="disabled">
+                                                    Naar verlofverzoek
+                                                </button>
+                                            }
+                                            
+                                        </td>
+                                    </tr>
+                                </tbody>
+                             }
+                        </table>
+                    </div>
+                }
+            </div>
+            <div class="text-center pagedlister">
+                @Html.PagedListPager(Model.Mutations, page => Url.Action("IndexMutations", "User", new { userid = Model.UserID, page = page, pagesize = Model.PageSize }))
+            </div>
+
+            <div>
+                @if (Model.Mutations.Count <= 0)
+                {
+                    <div class="col-md-12">
+                        <div class="col-md-12 containerkembit">
+                            <h3>U heeft geen wijzigingen in uw verlofdagen</h3>
+                            <hr />
+                        </div>
+                    </div>
+                }  
+            </div>
+                     
+
+        
+
+    </div>
+}

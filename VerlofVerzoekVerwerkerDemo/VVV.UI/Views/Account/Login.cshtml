@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form-signin" }))
+{
+    
+
+    @Html.Partial("Partials/_Message")
+
+    <div class="col-md-12 row">
+        <div class="col-md-12 row" style="margin-bottom:20px;">
+            <div class="col-md-2"></div>
+
+            <div  class="col-md-8" style="background-color:white; border: 1px solid #e6e6e6; padding-left:10%; padding-right:10%; padding-top:5%; padding-bottom:3%;">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <img src="~/content/img/KEMBIT_logo_RGB.png" title="VerlofVerzoekVerwerker" class="text-center" alt="VVV" style="width:100%;" />
+                </div>
+                <div class="col-md-2"></div>
+
+                <div class="col-md-12">
+                    <hr />
+                    <h1 class="col-md-12 hidden-xs" style="text-align:center;"><span style="font-size:50px; color:#221282;">W</span>elkom bij de<br/><span style="font-size:50px; color:#221282;">V</span>erlof<span style="font-size:50px; color:#221282;">V</span>erzoek<span style="font-size:50px; color:#221282;">V</span>erwerker<span style="font-size:50px; color:#221282;">.</span></h1>
+                    <h1 class="col-md-12 hidden-sm hidden-md hidden-lg" style="text-align:center; font-size:20px;"><span style="font-size:30px; color:#221282;">W</span>elkom bij de<br /><span style="font-size:30px; color:#221282;">V</span>erlof<span style="font-size:30px; color:#221282;">V</span>erzoek<span style="font-size:30px; color:#221282;">V</span>erwerker<span style="font-size:30px; color:#221282;">.</span></h1>
+                </div>
+                
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="col-md-12 row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8 containerkembit">
+                <div class="col-md-12">
+                    <a class="btn btn-trust btn-block" href="@Url.Action("SignIn", "Account")">Inloggen</a>                    
+                </div>
+             </div>
+
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+}

@@ -1,0 +1,61 @@
+﻿@model VVV.UI.ViewModels.User.EditModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Create</h2>
+@using (Html.BeginForm("Create", "User", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        <h2>
+            @ViewBag.Title
+        </h2>
+        <hr />
+
+        <div>
+            <label>Gebruikersnaam</label>
+            <div>
+                @Html.TextBoxFor(p => p.UserName, new { placeholder = "Vul de gebruikersnaam in van de gebruiker" })
+            </div>
+        </div>
+
+        <div>
+            <label>Wachtwoord</label>
+            <div>
+                @Html.TextBoxFor(p => p.Password, new { placeholder = "Vul de gebruikersnaam in van de gebruiker" })
+            </div>
+        </div>
+
+        <div>
+            <label>E-mail adres</label>
+            <div>
+                @Html.TextBoxFor(p => p.Email, new { placeholder = "Vul het E-mail adres in van de gebruiker" })
+
+            </div>
+        </div>
+
+        <div>
+            <label>Voornaam</label>
+            <div>
+                @Html.TextBoxFor(p => p.FirstName, new { placeholder = "Vul de voornaam in van de gebruiker" })
+            </div>
+        </div>
+
+        <div>
+            <label>Achternaam</label>
+            <div>
+                @Html.TextBoxFor(p => p.LastName, new { placeholder = "Vul de achternaam in van de gebruiker" })
+            </div>
+        </div>
+
+        @Html.ValidationMessage("UserExists", new { @class = "text-danger" })
+        <hr />
+        <button type="submit"><i class="fa fa-save"></i> Opslaan</button>
+
+        <a href="@Url.Action("Index", "User")">Annuleren</a>
+    </div>
+}

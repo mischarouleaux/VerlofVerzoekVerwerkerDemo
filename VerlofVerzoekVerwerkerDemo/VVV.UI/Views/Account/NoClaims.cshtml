@@ -1,0 +1,47 @@
+﻿
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+    @Html.Partial("Partials/_Message")
+
+    <div class="col-md-12 row">
+        <div class="col-md-12 row" style="margin-bottom:20px;">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8" style="background-color:white; border: 1px solid #e6e6e6; padding-left:10%; padding-right:10%; padding-top:5%; padding-bottom:3%;">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <img src="~/content/img/KEMBIT_logo_RGB.png" title="VerlofVerzoekVerwerker" class="text-center" alt="VVV" style="width:100%;" />
+                </div>
+                <div class="col-md-2"></div>
+
+                <div class="col-md-12">
+                    <hr />
+                    <h1 class="col-md-12 hidden-xs" style="text-align:center;"><span style="font-size:50px; color:#221282;">W</span>elkom bij de<br /><span style="font-size:50px; color:#221282;">V</span>erlof<span style="font-size:50px; color:#221282;">V</span>erzoek<span style="font-size:50px; color:#221282;">V</span>erwerker<span style="font-size:50px; color:#221282;">.</span></h1>
+                    <h1 class="col-md-12 hidden-lg hidden-md hidden-sm" style="text-align:center; color:#221282;">VVV</h1>
+                </div>
+
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
+
+        <div class="col-md-12 row">
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8 containerkembit">
+                <div class="col-md-12" style="text-align:center;">
+                    <p>Uw e-mailadres komt niet voor in de applicatie. Gelieve naar de HR-afdeling gaan, met de vraag u rechten toe te kennen op deze webapplicatie.</p>
+                    <a class="btn btnkembit btn-block" href="@Url.Action("SignOut", "Account")">Terug naar het inloggen</a> 
+                </div>
+            </div>
+
+            <div class="col-md-2"></div>
+        </div>
+
+    </div>
+

@@ -1,0 +1,366 @@
+﻿@model VVV.UI.ViewModels.Verlofaanvraag.IndexModel
+@using VVV.UI.Helpers;
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    @Html.AntiForgeryToken()
+    <div class="col-md-12 row">
+
+        <div class="col-md-12">
+
+            <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:1% 5% 1% 5%; margin-bottom:20px;">
+                <div class="col-md-8">
+                    <h3><strong>Eigen verlofVerzoeken</strong></h3>                    
+                </div>
+
+                @*
+                <div class="col-md-4" style="text-align:right;">
+                    <h5><strong>Resterende verlofdagen:</strong></h5>
+                    <p> @Model.Time</p>
+                </div>
+                *@
+
+                <div class="col-md-12"><hr /></div>
+                
+
+                <div class="col-md-8" style="margin-top:15px;">
+                    
+                    
+                </div>
+            </div>
+        </div>
+
+        @if (Model.HasSuccesMessage == true)
+        {
+            <div class="col-md-12">                
+                <div class="rounded alert alert-success">
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Verlofverzoek is opgeslagen!</h4></i>
+                </div>                                
+            </div>
+
+        }
+
+        @if (Model.HasDeletedMessage == true)
+        {
+            <div class="col-md-12">
+                <div class="rounded alert alert-danger">
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Verlofverzoek is verwijderd!</h4></i>
+                </div>
+            </div>
+
+        }
+
+        
+        <div class="col-md-3">
+            <div class="col-md-12 submenu">
+                <a class="btn btn-success" style="width:100%;" href="@Url.Action("Create", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>VerlofVerzoek maken</a>
+                <hr />
+                <a class="btn btn-success" style="margin-bottom:10px; width:100%;" href="@Url.Action("AcceptedVacation", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>Geaccepteerde</a><br />
+                <a class="btn btn-danger" style="margin-bottom:10px; width:100%;" href="@Url.Action("RejectedVacation", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>Afgewezen</a><br />
+                <a class="btn btn-default" style="margin-bottom:10px; width:100%;" href="@Url.Action("InTreatmentVacation", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>In behandeling</a><br/>
+                <a class="btn btn-default" style="margin-bottom:10px; width:100%;" href="@Url.Action("PropositionVacation", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>Voorgestelde</a><br />
+                <hr />
+                <a class="btn btn-primary" style="width:100%; margin-bottom:10px;" href="@Url.Action("Index", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>Overzicht</a>
+                <a class="btn btn-primary" style="width:100%;" href="@Url.Action("OldIndex", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>Oude verlofverzoeken</a>
+            </div>
+         </div>
+        
+        @if (Model.VacationRequest.Count > 0)
+        {
+            <div class="col-md-9">                                        
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped col-md-12" style="background-color:white; border:1px solid #e6e6e6;">
+                        <thead>
+                        <tr>
+                            <th>
+                                Reden van het verlof
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Begindatum
+                            </th>
+                            <th>
+                                Einddatum
+                            </th>
+                            <th>
+                                Duur van het verlof
+                            </th>
+                            
+
+                        </tr>
+                        </thead>
+                        
+                        @foreach (var item in Model.VacationRequest)
+                        {
+                            <tbody>
+                                @if (item.IsApproved == false && item.IsRejected == false && item.IsInTreatment == false)
+                                {
+                                    <tr class="table-hover" onclick="location.href = '@(Url.Action("AssessRequest", "Verlofaanvraag", new { id = item.VacationID }))'">
+
+
+                                        <td>
+                                            @item.Reason
+                                        </td>
+                                        @if (item.IsApproved == true)
+                                        {
+                                            <td>
+                                                <p><span class="glyphicon glyphicon-ok-sign" style="color:green; margin-right:10px;"></span>Geaccepteerd</p>
+                                            </td>
+                                        }
+                                        @if (item.IsInTreatment == true)
+                                        {
+                                            <td>
+                                                <p><span class="glyphicon glyphicon-transfer" style="margin-right:10px;"></span>In behandeling</p>
+                                            </td>
+                                        }
+                                        @if (item.IsRejected == true)
+                                        {
+                                            <td>
+                                                <p><span class="glyphicon glyphicon-remove-sign" style="color:red; margin-right:10px;"></span>Afgewezen</p>
+                                            </td>
+                                        }
+                                        @if (item.IsApproved == false && item.IsRejected == false && item.IsInTreatment == false)
+                                        {
+                                            <td>
+                                                <p><span class="glyphicon glyphicon-refresh" style="margin-right:10px;"></span>Voorgesteld verzoek</p>
+                                            </td>
+                                        }
+
+
+                                        @if (item.IsTotalDays == true)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                            </td>
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                            </td>
+                                        }
+
+                                        @if (item.IsTotalDays == false)
+                                        {
+                                            if (item.BeginDate.Hour < 10 && item.BeginDate.Minute < 10)
+                                            {
+                                                <td>
+                                                    @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @**@@item.BeginDate.Hour:0@**@@item.BeginDate.Minute                                                                
+                                                </td>
+                                            }
+                                            if (item.BeginDate.Hour < 10 && item.BeginDate.Minute >= 10)
+                                            {
+                                                <td>
+                                                    @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @**@@item.BeginDate.Hour:@item.BeginDate.Minute
+                                                </td>
+                                            }
+                                            if (item.BeginDate.Hour >= 10 && item.BeginDate.Minute < 10)
+                                            {
+                                                <td>
+                                                    @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute                                                            
+                                                </td>
+                                            }
+                                            if (item.BeginDate.Hour >= 10 && item.BeginDate.Minute >= 10)
+                                            {
+                                                <td>
+                                                    @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:@item.BeginDate.Minute
+                                                </td>
+                                            }
+
+                                            if (item.EndDate.Hour < 10 && item.EndDate.Minute < 10)
+                                            {
+                                                <td>
+                                                    @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @**@@item.EndDate.Hour:0@**@@item.EndDate.Minute                                                                
+                                                </td>
+                                            }
+                                            if (item.EndDate.Hour < 10 && item.EndDate.Minute >= 10)
+                                            {
+                                                <td>
+                                                    @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @**@@item.EndDate.Hour:@item.EndDate.Minute
+                                                </td>
+                                            }
+                                            if (item.EndDate.Hour >= 10 && item.EndDate.Minute < 10)
+                                            {
+                                                <td>
+                                                    @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                                </td>
+                                            }
+                                            if (item.EndDate.Hour >= 10 && item.EndDate.Minute >= 10)
+                                            {
+                                                <td>
+                                                    @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @**@@item.EndDate.Hour:@item.EndDate.Minute
+                                                </td>
+                                            }
+                                        }
+
+
+
+
+                                        @{
+                                            double Days = Convert.ToDouble(item.TotalMinutes / 480);
+                                            int Hours = (item.TotalMinutes % 480) / 60;
+                                            int Minutes = (item.TotalMinutes % 480) % 60;
+                                        }
+                                        <td>
+                                            @Days dagen, @Hours uur &amp; @Minutes minuten
+                                        </td>
+
+                                        
+
+                                    </tr>
+                             }
+                            @if ((item.IsApproved == true) || (item.IsRejected == true) || (item.IsInTreatment == true))
+                            {
+                                <tr onclick="location.href = '@(Url.Action("Details", "Verlofaanvraag", new { id = item.VacationID }))'">
+
+
+                                    <td>
+                                        @item.Reason
+                                    </td>
+                                    @if (item.IsApproved == true)
+                                    {
+                                        <td>
+                                            <p><span class="glyphicon glyphicon-ok-sign" style="color:green; margin-right:10px;"></span>Geaccepteerd</p>
+                                        </td>
+                                    }
+                                    @if (item.IsInTreatment == true)
+                                    {
+                                        <td>
+                                            <p><span class="glyphicon glyphicon-transfer" style="margin-right:10px;"></span>In behandeling</p>
+                                        </td>
+                                    }
+                                    @if (item.IsRejected == true)
+                                    {
+                                        <td>
+                                            <p><span class="glyphicon glyphicon-remove-sign" style="color:red; margin-right:10px;"></span>Afgewezen</p>
+                                        </td>
+                                    }
+                                    @if (item.IsApproved == false && item.IsRejected == false && item.IsInTreatment == false)
+                                    {
+                                        <td>
+                                            <p><span class="glyphicon glyphicon-refresh" style="margin-right:10px;"></span>Voorgesteld verzoek</p>
+                                        </td>
+                                    }
+
+
+                                    @if (item.IsTotalDays == true)
+                                    {
+                                        <td>
+                                            @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, hele dagen vrij
+                                        </td>
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year
+                                            </td>
+                                    }
+
+                                    @if (item.IsTotalDays == false)
+                                    {
+                                        if (item.BeginDate.Hour < 10 && item.BeginDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, 0@**@@item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                                        
+                                                    </td>
+                                        }
+                                        if (item.BeginDate.Hour < 10 && item.BeginDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, 0@**@@item.BeginDate.Hour:@item.BeginDate.Minute
+                                            </td>
+                                        }
+                                        if (item.BeginDate.Hour >= 10 && item.BeginDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @item.BeginDate.Hour:0@**@@item.BeginDate.Minute
+                                            </td>
+                                        }
+                                        if (item.BeginDate.Hour >= 10 && item.BeginDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.BeginDate.Day / @item.BeginDate.Month / @item.BeginDate.Year, @**@@item.BeginDate.Hour:@item.BeginDate.Minute
+                                            </td>
+                                        }
+
+                                        if (item.EndDate.Hour < 10 && item.EndDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, 0@**@@item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                            </td>
+                                        }
+                                        if (item.EndDate.Hour < 10 && item.EndDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, 0@**@@item.EndDate.Hour:@item.EndDate.Minute
+                                            </td>
+                                        }
+                                        if (item.EndDate.Hour >= 10 && item.EndDate.Minute < 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @item.EndDate.Hour:0@**@@item.EndDate.Minute
+                                                    
+                                                </td>
+                                        }
+                                        if (item.EndDate.Hour >= 10 && item.EndDate.Minute >= 10)
+                                        {
+                                            <td>
+                                                @item.EndDate.Day / @item.EndDate.Month / @item.EndDate.Year, @**@@item.EndDate.Hour:@item.EndDate.Minute
+                                                    
+                                                </td>
+                                        }
+                                    }
+
+
+
+
+                                    @{
+                                        double Days = Convert.ToDouble(item.TotalMinutes / 480);
+                                        int Hours = (item.TotalMinutes % 480) / 60;
+                                        int Minutes = (item.TotalMinutes % 480) % 60;
+                                    }
+                                    <td>
+                                        @Days dagen, @Hours uur &amp; @Minutes minuten
+                                    </td>
+
+                                    
+
+                                </tr>
+                                        }
+                            
+                            </tbody>
+                            }
+                    </table>
+                    
+                </div>
+                
+            </div>
+            <div class="text-center pagedlister">
+                @Html.PagedListPager(Model.VacationRequest, page => Url.Action("Index", new { page = page, pagesize = Model.PageSize }))
+            </div>
+                                        }
+
+        <div class="col-md-9">
+            
+                @if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+                {
+                    if (Model.VacationRequest.Count == 0)
+                    {
+                        <div class="col-md-12 containerkembit">
+                            <div class="col-md-12 row">
+
+                                <h2>U heeft geen verlofverzoeken</h2>
+                                <hr />
+                            </div>
+                        </div>
+                    }
+                }
+                        
+        </div>
+    </div>
+
+}
+

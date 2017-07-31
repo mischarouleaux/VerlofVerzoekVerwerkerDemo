@@ -1,0 +1,95 @@
+﻿@model VVV.UI.ViewModels.User.IndexModel
+@using VVV.UI.Helpers;
+
+
+@{
+    ViewBag.Title = "IndexManager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if(SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    @Html.AntiForgeryToken()
+    
+
+    <div class="col-md-12 row">
+
+        <div class="col-md-12">
+
+            <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding: 1% 5% 1% 5%; margin-bottom:20px;">
+                <div class="col-md-12">
+                    <h3><strong>Overzicht mijn medewerkers</strong></h3>
+                </div>
+                <div class="col-md-12">
+                    <hr />
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12">
+            @if (Model.ApplicationUsers.Count > 0)
+            {
+                
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped col-md-12" style="background-color:white; border:1px solid #e6e6e6;">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    Naam
+                                </th>
+                                <th>
+                                    Gebruikersnaam
+                                </th>
+                                <th>
+                                    E-mailadres
+                                </th>
+                            </tr>
+                        </thead>
+
+                        @foreach (var item in Model.ApplicationUsers)
+                        {
+                            <tbody>
+                                <tr class="table-hover" onclick="location.href = '@(Url.Action("DetailsManager", "User", new { userid = item.UserID }))'">
+                                    <td>
+                                        @item.FirstName @item.LastName
+                                    </td>
+
+                                    <td>
+                                        @item.UserName
+                                    </td>
+                                    <td>
+                                        @item.Email
+                                    </td>
+                                </tr>
+
+                                
+                                
+                            </tbody>
+                        }
+                    </table>
+                </div>
+                
+            }
+
+            <div class="col-md-12">
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; margin-bottom:20px;">
+                    @if (Model.ApplicationUsers.Count <= 0)
+                    {
+                        <div class="col-md-12">
+                            <h3>U heeft geen medewerkers onder u staan</h3>
+                            <hr />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+}
+
+
+
+

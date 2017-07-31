@@ -1,0 +1,399 @@
+﻿@model VVV.UI.ViewModels.User.EditModel
+@using VVV.UI.Helpers;
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    using (Html.BeginForm("DetailsManager", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.UserID)
+
+
+        <div class="col-md-12 row">
+
+            
+            <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding:2% 5% 2% 5%; margin-bottom:20px;">
+                <h3>                   
+                    <strong>Gebruikersinformatie</strong><span style="font-size:14px;"><i>  van @Model.FirstName @Model.LastName</i></span>
+                    @if (Model.UserID == SecurityHelper.GetUserId() && SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager) == false)
+                    {                        
+                        <button type="button" onclick="location.href = '@(Url.Action("IndexMutations", "User", new { userid = Model.UserID }))'" class="btn btn-info glyphicon glyphicon-book pull-right" style="margin-right:5px;"></button>
+                    }
+                    @if (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager) && Model.IsActive == true)
+                    {
+
+                        <button type="button" class="btn btn-danger glyphicon glyphicon-trash pull-right" data-toggle="modal" data-tooltip="tooltip" title="Verwijderen" data-target="#DeleteModal"></button>
+                        <button type="button" data-toggle="tooltip" title="Bewerken" onclick="location.href = '@(Url.Action("Edit", "User", new { userid = Model.UserID }))'" class="btn btn-info glyphicon glyphicon-pencil pull-right" style="margin-right:5px;"></button>
+                        @*<button type="button" data-toggle="tooltip" title="Bekijk mutaties" onclick="location.href = '@(Url.Action("IndexMutations", "User", new { userid = Model.UserID }))'" class="btn btn-info glyphicon glyphicon-book pull-right" style="margin-right:5px;"></button>*@
+
+                    }
+                    
+                    
+                </h3>                
+                <hr />
+            </div>          
+
+            
+            <div>
+                <i style="text-align:center;"><h4>@Html.Partial("Partials/_Message")</h4></i>
+            </div>
+            
+            @if (Model.HasSuccesMessage == true)
+            {
+               
+                <div class="rounded alert alert-success">
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Wijzigingen zijn opgeslagen!</h4></i>
+                </div>
+                
+
+            }
+
+            @if (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager) && Model.IsActive == false)
+            {
+                <div class="col-md-12 headerkembit">
+                    <button type="button" onclick="location.href = '@(Url.Action("UndoDelete", "User", new { userid = Model.UserID }))'" class="btn btn buttonkembit btn-danger" style="margin-right:5px;">Verwijderen ongedaan maken</button>
+                </div>
+                
+            }
+
+            
+
+
+            @if ((Model.IsManager == true || SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager)) && Model.IsNotAvailable == true && Model.UserID != SecurityHelper.GetUserId())
+            {
+                <div class="rounded alert alert-danger col-md-12">
+
+                    <i class="fa fa-danger" style="text-align:center;"><h4>Deze manager staat op afwezig!</h4></i>
+                </div>
+            }
+
+            @if (Model.IsManager == true && SecurityHelper.GetUserId() == Model.UserID && Model.IsNotAvailable == true)
+            {
+                <div class="rounded alert alert-danger col-md-12">
+
+                    <i class="fa fa-danger" style="text-align:center;"><h4>U staat op afwezig. U kunt op dit moment geen verlof beoordelen!</h4></i>
+                </div>
+            }
+
+            <!-- Modal -->
+            <div id="DeleteModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Medewerker verwijderen</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Weet u zeker dat u deze medewerker wil verwijderen?</p>
+                        </div>
+                        <div class="modal-footer">
+
+                            <a class="btn btn-danger" onclick="location.href = '@(Url.Action("Delete", "User", new { id = Model.UserID }))'">Verwijderen</a>
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            @if (Model.HasSecondManager == true)
+            {
+                <ul class="nav nav-pills nav-justified">
+                    <li style="background-color:white;" class="active"><a data-toggle="tab" href="#Personalinformation">Persoonsinformatie</a></li>
+                    @*<li style="background-color:white;"><a data-toggle="tab" href="#VacationDays">Verlofdagen</a></li>*@
+                    <li style="background-color:white;"><a data-toggle="tab" href="#Managers">Managers</a></li>
+                    @if (Model.IsManager)
+                    {
+                        <li style="background-color:white;"><a data-toggle="tab" href="#Availability">Aanwezigheid</a></li>
+                    }
+                    <li style="background-color:white;"><a data-toggle="tab" href="#UserRoles">Gebruikersrollen</a></li>
+            
+                </ul>
+                <div class="col-md-12 containerkembit">
+            
+            
+                    <div class="tab-content">
+                        <div id="Personalinformation" class="tab-pane fade in active">                                        
+                            <div class="col-md-4 marginkembit">
+                                <div class="col-md-12">
+                                    <h4>Naam</h4>
+                                    <p>@Model.FirstName @Model.LastName</p>
+                                </div>
+                            </div>            
+                            <div class="col-md-4 marginkembit">
+                                <div class="col-md-12">
+                                    <h4>
+                                        E-mailadres
+                                    </h4>
+                                    <p>@Model.Email</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 marginkembit">
+                                <div class="col-md-12">
+                                    <h4>Afdeling</h4>
+                                    <p>@Model.Department</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @*
+                        <div id="VacationDays" class="tab-pane fade">
+                            <div class="col-md-6" style="margin-bottom:20px;">
+                                <div class="col-md-12">
+                                    <h4>Huidige aantal verlofuren</h4>
+                                    <p>@Model.VacationDaysInHours</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="margin-bottom:20px;">
+                                <div class="col-md-12">
+                                    <h4>Huidige aantal verlofuren uitgedrukt in dagen</h4>
+                                    <p>@Model.VacationDaysInDays</p>
+                                </div>
+                            </div>
+            
+                            @if (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.Manager) || SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager))
+                            {
+                                if (Model.UserID != SecurityHelper.GetUserId() && Model.IsActive == true || (Model.UserID == SecurityHelper.GetUserId() && SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager) && Model.IsActive == true))
+                                {
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-info col-md-12" id="buttonDaysOpen" style="width:100%">Pas verlofuren aan</button>
+                                        </div>
+                                    </div>
+
+
+
+                                    if (Model.IsActive == true)
+                                    {
+                                        <div class="col-md-12" id="DaysVacation" style="display:none;">
+
+                                            <div class="col-md-12" style="padding:1% 5% 1% 5%;">
+                                                <div class="col-md-12">
+                                                    <h4><strong>Verlofdagen aanpassen</strong></h4>
+                                                    <hr />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>Aantal dagen toevoegen/aftrekken *</h5>
+                                                    @Html.EditorFor(model => model.Days, new { htmlAttributes = new { @class = "form-control", required = "required", @max = "100", @min = "-100", @id = "OnlyNumbers", @Value = "0", placeholder = "Aantal dagen" } })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>Aantal uren toevoegen/ aftrekken *</h5>
+                                                    @Html.EditorFor(model => model.Hours, new { htmlAttributes = new { @class = "form-control", required = "required", @max = "100", @min = "-100", @id = "OnlyNumbers1", @Value = "0", placeholder = "Aantal uren" } })
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <h5>Aantal minuten toevoegen/ aftrekken *</h5>
+                                                    @Html.EditorFor(model => model.Minutes, new { htmlAttributes = new { @class = "form-control", required = "required", @max = "100", @min = "-100", @id = "OnlyNumbers2", @Value = "0", placeholder = "Aantal minuten" } })
+                                                </div>
+
+
+                                                <div class="col-md-12">
+                                                    <hr />
+                                                    <div class="col-md-6">
+                                                        <button type="submit" class="btn btn-success" style="margin-top:10px; width:100%;"><i class="fa fa-save"></i> Opslaan</button>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <button type="reset" id="buttonDaysClose" class="btn btn-default" style="margin-top:10px; width:100%;"><i class="fa fa-save"></i>Annuleren</button>
+                                                    </div>
+
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                        *@
+            
+                        <div id="Managers" class="tab-pane fade">
+                            <div class="col-md-6 marginkembit">
+                                <div class="col-md-12">
+                                    <h4>Naam 1ste manager</h4>
+                                    <p>@Model.ManagerFirstName @Model.ManagerLastName</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 marginkembit">
+                                <div class="col-md-12">
+                                    <h4>Naam 2e manager</h4>
+                                    <p>@Model.SecondManagerFirstName @Model.SecondManagerLastName</p>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div id="Availability" class="tab-pane fade">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+            
+                                    @if ((SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.Manager) && Model.IsActive == true) || (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager) && Model.IsActive == true))
+                                    {
+                                        if (Model.IsManager == true && ((SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.Manager) && Model.UserID == SecurityHelper.GetUserId()) || SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager)))
+                                        {
+                                            if (Model.IsAvailable == true)
+                                            {
+                                                <div class="col-md-12">
+                                                    <h4>@Model.FirstName @Model.LastName staat op dit moment op aanwezig</h4>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <a class="btn btn-danger buttonkembit" href="@Url.Action("SetNotAvailable", "User", new { userid = Model.UserID})">
+                                                        Zet @Model.FirstName @Model.LastName op afwezig.
+                                                    </a>
+                                                </div>
+                                                
+                                            }
+            
+                                            if (Model.IsAvailable == false)
+                                            {
+                                                <div class="col-md-12">
+                                                    <h4>@Model.FirstName @Model.LastName staat op dit moment op afwezig</h4>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <a class="btn btn-success buttonkembit" href="@Url.Action("SetAvailable", "User", new { userid = Model.UserID})">
+                                                        Zet @Model.FirstName @Model.LastName op aanwezig.
+                                                    </a>
+                                                </div>
+                                                
+                                            }
+            
+                                        }
+                                    }
+            
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div id="UserRoles" class="tab-pane fade">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    @if (Model.IsMedewerker == true)
+                                    {
+                                        <h4>Medewerker</h4>
+                                        <h5 class="glyphicon glyphicon-ok-sign" style="color:green;"></h5>
+                                    }
+            
+                                    @if (Model.IsMedewerker == false)
+                                    {
+                                        <h4>Medewerker</h4>
+                                        <h5 class="glyphicon glyphicon-remove-sign" style="color:red;"></h5>
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    @if (Model.IsManager == true)
+                                    {
+                                        <h4>Manager</h4>
+                                        <h5 class="glyphicon glyphicon-ok-sign" style="color:green;"></h5>
+                                    }
+            
+                                    @if (Model.IsManager == false)
+                                    {
+                                        <h4>Manager</h4>
+                                        <h5 class="glyphicon glyphicon-remove-sign" style="color:red;"></h5>
+                                    }
+                                </div>
+                                <div class="col-md-4">
+                                    @if (Model.IsHRManager == true)
+                                    {
+                                        <h4>HR-medewerker</h4>
+                                        <h5 class="glyphicon glyphicon-ok-sign" style="color:green;"></h5>
+                                    }
+            
+                                    @if (Model.IsHRManager == false)
+                                    {
+                                        <h4>HR-medewerker</h4>
+                                        <h5 class="glyphicon glyphicon-remove-sign" style="color:red;"></h5>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }             
+
+                <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding:2% 5% 2% 5%; margin-top:20px; margin-bottom:20px;">
+                    @if (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager))
+                    {
+                        <a class="btn btn-default" href="@Url.Action("IndexHR", "User")"><i class="fa fa-angle-double-left"></i>Terug naar het overzicht</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-default" href="@Url.Action("Login", "Account")"><i class="fa fa-angle-double-left"></i>Terug naar het Dashboard</a>
+                    }
+                    
+                </div>
+
+
+
+            </div>
+        
+            
+    }
+}
+
+@section scripts{
+    <script>
+        $("#OnlyNumbers").keypress(function (e) {
+            if (e.which < 48 || e.which > 58) {
+                if (e.which == 45) {
+                    return true
+                }
+                e.preventDefault();
+            }
+        });
+        $("#OnlyNumbers1").keypress(function (e) {
+            if (e.which < 48 || e.which > 58) {
+                if (e.which == 45) {
+                    return true
+                }
+                e.preventDefault();
+            }
+        });
+        $("#OnlyNumbers2").keypress(function (e) {
+            if (e.which < 48 || e.which > 58) {
+                if (e.which == 45) {
+                    return true
+                }
+                e.preventDefault();
+            }
+        });
+        $(document).ready(function () {
+            $("#buttonDaysOpen").click(function () {
+                $("#DaysVacation").slideToggle("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#buttonDaysClose").click(function () {
+                $("#DaysVacation").slideUp("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $("#buttonAvailabilityOpen").click(function () {
+                $("#Availability").slideToggle("slow");
+            });
+        });
+        $(document).ready(function () {
+            $("#buttonAvailabilityClose").click(function () {
+                $("#Availability").slideUp("slow");
+            });
+        });
+
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        $(document).ready(function () {
+            $('[data-tooltip="tooltip"]').tooltip();
+        });
+        
+    </script>
+    }

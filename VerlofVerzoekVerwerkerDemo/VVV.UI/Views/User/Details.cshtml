@@ -1,0 +1,267 @@
+﻿@model VVV.UI.ViewModels.User.DetailsModel
+@using VVV.UI.Helpers;
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    using (Html.BeginForm("Details", "User", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="col-md-12 row">
+
+            <div class="col-md-12">
+                <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding:2% 5% 2% 5%; margin-bottom:20px;">
+                    <h3><strong>Gebruikersinformatie</strong></h3>
+                    <hr />
+                </div>
+            </div>
+
+            @if (Model.HasSecondManager == false)
+            {
+                <div class="col-md-12" style="margin-bottom:20px;">
+                    <div class="col-md-4">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center; margin-bottom:20px;">
+                            <h4><strong>Algemene informatie</strong></h4>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Gebruikersnaam</h4>
+                                <p>@Model.UserName</p>
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Naam</h4>
+                                <p>@Model.FirstName @Model.LastName</p>
+                            </div>
+                            <hr />
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>E-mailadres</h4>
+                                <p>@Model.Email</p>
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center;  margin-bottom:20px;">
+                            <h4><strong>Manager informatie</strong></h4>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Gebruikersnaam</h4>
+                                <p>@Model.ManagerUserName</p>
+                            </div>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Naam</h4>
+                                <p>@Model.ManagerFirstName @Model.ManagerLastName</p>
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>E-mailadres</h4>
+                                <p>@Model.ManagerEmail</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center;  margin-bottom:20px;">
+                            <h4><strong>Gebruikersrollen</strong></h4>
+                            <div class="col-md-6">
+                                <hr />
+                                @if (Model.IsMedewerker == true)
+                                {
+                                    <h4>Medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-ok-sign" style="color:green;"></h4>
+                                }
+
+                                @if (Model.IsMedewerker == false)
+                                {
+                                    <h4>Medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-remove-sign" style="color:red;"></h4>
+                                }
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <hr />
+                                @if (Model.IsManager == true)
+                                {
+                                    <h4>Manager</h4>
+                                    <h4 class="glyphicon glyphicon-ok-sign" style="color:green;"></h4>
+                                }
+
+                                @if (Model.IsManager == false)
+                                {
+                                    <h4>Manager</h4>
+                                    <h4 class="glyphicon glyphicon-remove-sign" style="color:red;"></h4>
+                                }
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                @if (Model.IsHRManager == true)
+                                {
+                                    <h4>HR-medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-ok-sign" style="color:green;"></h4>
+                                }
+
+                                @if (Model.IsHRManager == false)
+                                {
+                                    <h4>HR-medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-remove-sign" style="color:red;"></h4>
+                                }
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.HasSecondManager == true)
+            {
+                <div class="col-md-12" style="margin-bottom:20px;">
+                    <div class="col-md-3">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center; margin-bottom:20px;">
+                            <h4><strong>Algemene informatie</strong></h4>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Gebruikersnaam</h4>
+                                <p>@Model.UserName</p>
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Naam</h4>
+                                <p>@Model.FirstName @Model.LastName</p>
+                            </div>
+                            <hr />
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>E-mailadres</h4>
+                                <p>@Model.Email</p>
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center;  margin-bottom:20px;">
+                            <h4><strong>Manager informatie</strong></h4>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Gebruikersnaam</h4>
+                                <p>@Model.ManagerUserName</p>
+                            </div>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Naam</h4>
+                                <p>@Model.ManagerFirstName @Model.ManagerLastName</p>
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>E-mailadres</h4>
+                                <p>@Model.ManagerEmail</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center;  margin-bottom:20px;">
+                            <h4><strong>2e Manager informatie</strong></h4>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Gebruikersnaam</h4>
+                                <p>@Model.SecondManagerUserName</p>
+                            </div>
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>Naam</h4>
+                                <p>@Model.SecondManagerFirstName @Model.SecondManagerLastName</p>
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                <h4>E-mailadres</h4>
+                                <p>@Model.SecondManagerEmail</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; text-align:center;  margin-bottom:20px;">
+                            <h4><strong>Gebruikersrollen</strong></h4>
+                            <div class="col-md-12">
+                                <hr />
+                                @if (Model.IsMedewerker == true)
+                                {
+                                    <h4>Medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-ok-sign" style="color:green;"></h4>
+                                }
+
+                                @if (Model.IsMedewerker == false)
+                                {
+                                    <h4>Medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-remove-sign" style="color:red;"></h4>
+                                }
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                @if (Model.IsManager == true)
+                                {
+                                    <h4>Manager</h4>
+                                    <h4 class="glyphicon glyphicon-ok-sign" style="color:green;"></h4>
+                                }
+
+                                @if (Model.IsManager == false)
+                                {
+                                    <h4>Manager</h4>
+                                    <h4 class="glyphicon glyphicon-remove-sign" style="color:red;"></h4>
+                                }
+
+                            </div>
+
+                            <div class="col-md-12">
+                                <hr />
+                                @if (Model.IsHRManager == true)
+                                {
+                                    <h4>HR-medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-ok-sign" style="color:green;"></h4>
+                                }
+
+                                @if (Model.IsHRManager == false)
+                                {
+                                    <h4>HR-medewerker</h4>
+                                    <h4 class="glyphicon glyphicon-remove-sign" style="color:red;"></h4>
+                                }
+                            </div>
+                            <hr />
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+                <div class="col-md-12">
+                    <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding:2% 5% 2% 5%; margin-bottom:20px;">
+                        
+                        <a class="btn btn-default" href="@Url.Action("Login", "Account")"><i class="fa fa-angle-double-left"></i>Terug naar het dashboard</a>
+                    </div>
+                </div>
+            
+
+        </div>
+
+    }
+}

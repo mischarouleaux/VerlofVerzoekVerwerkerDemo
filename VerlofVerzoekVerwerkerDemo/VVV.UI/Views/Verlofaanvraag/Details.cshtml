@@ -1,0 +1,402 @@
+﻿@model VVV.UI.ViewModels.Verlofaanvraag.DetailsModel
+@using VVV.UI.Helpers;
+@{
+    ViewBag.Title = "Verlofaanvraag Annuleren";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.vacreqID)
+
+    <div class="col-md-12 row">
+
+
+        <div class="col-md-12">
+
+            <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:1% 5% 1% 5%; margin-bottom:20px;">
+                <div class="col-md-12">
+                    <h3>
+                        <strong>Details verlofverzoek</strong>
+                        
+                        @if (Model.IsAccepted == true)
+                        {
+                            <span class="h5 pull-right"><span class="glyphicon glyphicon-ok-sign" style="color:green;"></span>  Geaccepteerd</span>
+                        }
+                        @if (Model.IsRejected == true)
+                        {
+                            <span class="h5 pull-right"><span class="glyphicon glyphicon-remove-sign" style="color:red;"></span>  Afgewezen</span>
+                        }
+                        @if (Model.IsInTreatment == true)
+                        {
+                            <span class="h5 pull-right"><span class="glyphicon glyphicon-transfer"></span>  In behandeling</span>
+                        }
+
+                        @if (Model.IsAccepted == false && Model.IsRejected == false && Model.IsInTreatment == false)
+                        {
+                            <span class="h5 pull-right"><span class="glyphicon glyphicon-refresh"></span>    In overleg</span>
+                        }              
+                        <span class="h4 pull-right" style="margin-right:1%"><strong>Status:</strong></span>
+                    </h3>                    
+                </div>
+                <div class="col-md-12">
+                    <hr />
+                </div>
+
+            </div>
+        </div>
+
+        @if (Model.UserID == SecurityHelper.GetUserId())
+        {
+            if (Model.IsActive == false || Model.IsCommunicated == false || Model.HasDeadlines == true)
+            {
+                <div class="col-md-12">
+                    <div class="rounded alert alert-danger">
+                        <i class="fa fa-danger">
+                            <h5>
+                                U heeft de volgende melding/ meldingen: <br/>
+
+                                @if (Model.IsActive == false)
+                                {
+                                    <span> - Dit verlofverzoek is verwijderd.<br /></span>
+                                }
+                                @if (Model.IsCommunicated == false)
+                                {
+                                    <span> - Dit verlofverzoek is niet gecommuniceerd met het team!<br /></span>
+                                }
+                                @if (Model.HasDeadlines == true)
+                                {
+                                    <span> - In de periode van dit verlofverzoek heeft de medewerker deadlines staan!<br /></span>
+                                }
+                            </h5>
+                        </i>
+                    </div>
+                </div>
+            }            
+        }
+        
+
+        <div class="col-md-12">
+            <div class="col-md-12 headerkembit">
+                @if (Model.TotalDays == false)
+                {
+                    <div class="col-md-6 marginkembit">
+                        <h4><strong>Begin van het verlof</strong></h4>
+                        <h5>@Model.BeginDate, @Model.BeginTimeHour:@Model.BeginTimeMinute</h5>
+                    </div>
+
+                    <div class="col-md-6 marginkembit">
+                        <h4><strong>Eind van het verlof</strong></h4>
+                        <h5>@Model.EndDate, @Model.EndTimeHour:@Model.EndTimeMinute</h5>
+                    </div>
+                }
+                @if (Model.TotalDays == true)
+                {
+                    <div class="col-md-4 marginkembit">
+                        <h4><strong>Begin datum van het verlof</strong></h4>
+                        <h5>@Model.BeginDate</h5>
+                    </div>
+
+                    <div class="col-md-4 marginkembit">
+                        <h4><strong>Eind datum van het verlof</strong></h4>
+                        <h5>@Model.EndDate</h5>
+                    </div>
+
+                    <div class="col-md-4 marginkembit">
+                        <h4><strong>Hele dagen vrij</strong></h4>
+                        <h5>Ja</h5>
+                    </div>
+                }
+                @if (Model.UserID == SecurityHelper.GetUserId())
+                {
+                    <div class="col-md-12">
+                        <hr style="margin: 0px;" />
+                    </div>
+
+                    <div class="col-md-12 marginkembit">
+                        <h4><strong>Duur van het verlof</strong></h4>
+                        <h5>@Model.DaysRequest dagen, @Model.HoursRequest uur &amp; @Model.MinutesRequest minuten</h5>
+                    </div>
+
+                    <div class="col-md-12">
+                        <hr style="margin: 0px;" />
+                    </div>
+
+                    <div class="col-md-6 marginkembit">
+                        <h4><strong>Aanvrager</strong></h4>
+                        <h5>@Model.FirstName @Model.LastName</h5>
+                    </div>
+                    if (Model.IsInTreatment == true)
+                    {
+                        <div class="col-md-6 marginkembit">
+                            <h4><strong>Manager</strong></h4>
+                            <h5>@Model.ManagerName</h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-6 marginkembit">
+                            <h4><strong>Beoordelaar</strong></h4>
+                            <h5>@Model.ManagerName</h5>
+                        </div>
+                    }
+
+                    <div class="col-md-12">
+                        <hr style="margin: 0px;" />
+                    </div>
+
+                    if (Model.IsRejected == true)
+                    {
+                        <div class="col-md-6 marginkembit">
+                            <h4><strong>Reden van het verlofverzoek</strong></h4>
+                            <p>@Model.Reason</p>
+                        </div>
+
+                        <div class="col-md-6 marginkembit">
+                            <h4><strong>Reden van afwijzing</strong></h4>
+                            <p>@Model.ReasonRejection</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-12">
+                            <h4><strong>Reden van het verlofverzoek</strong></h4>
+                            <p>@Model.Reason</p>
+                        </div>
+                    }
+                }
+                
+            </div>
+        </div>
+
+        @*
+        <div class="col-md-12" style="margin-bottom:20px;">
+            <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding: 1% 5% 1% 5%;">
+                <div class="col-md-6">
+                    <h4><strong>Algemene informatie</strong></h4>
+                    <hr />
+                    <div class="col-md-12">
+                        <h4>Reden van het verlof</h4>
+                        <p>@Model.Reason</p>
+
+                        @if ((Model.IsRejected == true) || (Model.IsAccepted == false && Model.IsRejected == false && Model.IsInTreatment == false))
+                        {
+                            <hr />
+                            <h4>Reden van afwijzing</h4>
+                            <p>@Model.ReasonRejection</p>
+                        }
+                    </div>
+                    
+                </div>
+                
+                <div class="col-md-3">
+                    <h4><strong>Aanvrager</strong></h4>
+                    <hr />
+                    <div class="col-md-12">
+                        <h4>Naam</h4>
+                        <p>@Model.FirstName @Model.LastName</p>
+                        <hr />
+                        <h4>E-mailadres</h4>
+                        <p>@Model.Email</p>
+                    </div>
+                </div>
+                @if (Model.IsInTreatment == true)
+                {
+                    <div class="col-md-3">
+                        <h4><strong>Manager</strong></h4>
+                        <hr />
+                        <div class="col-md-12">
+                            <h4>Naam</h4>
+                            <p>@Model.ManagerName</p>
+                            <hr />
+                            <h4>E-mailadres</h4>
+                            <p>@Model.ManagerMail</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-3">
+                        <h4><strong>Beoordelaar</strong></h4>
+                        <hr />
+                        <div class="col-md-12">
+                            <h4>Naam</h4>
+                            <p>@Model.ManagerName</p>
+                            <hr />
+                            <h4>E-mailadres</h4>
+                            <p>@Model.ManagerMail</p>
+                        </div>
+                    </div>
+                }
+                
+
+                <div class="col-md-12">
+                    <hr />
+                    <div class="col-md-6">
+                        <h4><strong>Status</strong></h4>
+                        @if (Model.IsAccepted == true)
+                        {
+                            <p><span class="glyphicon glyphicon-ok-sign" style="color:green;"></span>  Geaccepteerd door de manager</p>
+                        }
+                        @if (Model.IsRejected == true)
+                        {
+                            <p><span class="glyphicon glyphicon-remove-sign" style="color:red;"></span>  Afgewezen door de manager</p>
+                        }
+                        @if (Model.IsInTreatment == true)
+                        {
+                            <p><span class="glyphicon glyphicon-transfer"></span>  In behandeling</p>
+                        }
+
+                        @if (Model.IsAccepted == false && Model.IsRejected == false && Model.IsInTreatment == false)
+                        {
+                            <p><span class="glyphicon glyphicon-refresh"></span>    In overleg</p>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        <h4><strong>Duur van het verlof</strong></h4>
+                        <h5>@Model.DaysRequest dagen, @Model.HoursRequest uren &amp; @Model.MinutesRequest minuten</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        *@
+        @*
+        <div class="col-md-12" style="margin-bottom:20px;">
+            @if (Model.TotalDays == false)
+            {
+                <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding: 1% 5% 1% 5%;">
+                    <h4><strong>Periode van het verlofverzoek</strong></h4>
+                    <hr />
+
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <h4>Begindatum</h4>
+
+                            <p>@Model.BeginDate</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <h4>Begintijd</h4>
+                            <p>@Model.BeginTimeHour:@Model.BeginTimeMinute uur</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <h4>Einddatum</h4>
+                            <p>@Model.EndDate</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <h4>Eindtijd</h4>
+                            <p>@Model.EndTimeHour:@Model.EndTimeMinute</p>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.TotalDays == true)
+            {
+                <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6;">
+                    <h4><strong>Periode van het verlofverzoek</strong></h4>
+                    <hr />
+
+                    <div class="col-md-4">
+                        <div class="col-md-12">
+                            <h4>Begindatum</h4>
+
+                            <p>@Model.BeginDate</p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-12">
+
+                            <h4>Einddatum</h4>
+                            <p>@Model.EndDate</p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="col-md-12">
+                            <h4>Tijden</h4>
+                            <p>Gebruiker heeft hele dagen vrij.</p>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        *@
+
+        @if (Model.IsActive == true && SecurityHelper.GetUserId() == Model.UserID)
+        {
+            if ((Model.IsInTreatment == true) || (Model.IsRejected == true))
+            {
+                <div class="col-md-12">
+                    <div class="col-md-12 headerkembit">
+                        <div class="col-md-6">
+                            <a class="btn btn-success buttonkembit" href="@Url.Action("EditMedewerker", "Verlofaanvraag", new { id = Model.vacreqID })"><i class="fa fa-angle-double-left"></i>Bewerken</a>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-danger buttonkembit" data-toggle="modal" data-target="#DeleteModal">Verwijderen</button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            if (Model.IsAccepted == true)
+            {
+                <div class="col-md-12">
+                    <div class="col-md-12 headerkembit">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-danger buttonkembit" data-toggle="modal" data-target="#DeleteModal">Verwijderen</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        
+        
+
+
+        <!-- Modal -->
+        <div id="DeleteModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">VerlofVerzoek verwijderen</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Weet u zeker dat u dit verlofverzoek wilt verwijderen?</p>
+                    </div>
+                    <div class="modal-footer">
+                        
+                        <button class="btn btn-danger buttonkembit" onclick="location.href = '@(Url.Action("Delete", "Verlofaanvraag", new { id = Model.vacreqID }))'">Verwijderen</button>
+                        
+                        <button type="button" class="btn btn-default buttonkembit" data-dismiss="modal">Annuleren</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding:2% 5% 2% 5%; margin-bottom:20px;">
+
+                <a class="btn btn-default buttonkembit" href="@Url.Action("Index", "Verlofaanvraag")"><i class="fa fa-angle-double-left"></i>Terug naar het overzicht</a>
+                <a class="btn bg-primary buttonkembit" href="@Url.Action("Login", "Account")"><i class="fa fa-angle-double-left"></i>Terug naar mijn dashboard</a>
+                
+            </div>
+        </div>
+    </div>
+
+}
+
+
+

@@ -1,0 +1,396 @@
+﻿@model VVV.UI.ViewModels.Verlofaanvraag.EditModel
+@using VVV.UI.Helpers;
+
+@{
+    ViewBag.Title = "Verlof bewerken";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .error {
+        border: 1px solid #b94a48 !important;
+        background-color: #fee !important;
+    }
+    .datepicker {background-color:white !important;}
+</style>
+
+@if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+{
+    using (Html.BeginForm("EditMedewerker", "Verlofaanvraag", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.UserId)
+        @Html.HiddenFor(model => model.VacationID)
+
+        <div class="col-md-12 row">
+
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:4% 5% 2% 5%; margin-bottom:20px;">
+                        <h3><strong>VerlofVerzoek bewerken</strong></h3>
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            
+            
+            @*
+            <div class="col-md-12">
+                <div class="col-md-12">                   
+                        @if ((Model.Days <= 0 && Model.Hours <= 0 && Model.Minutes <= 0))
+                        {
+                            <div class="rounded alert alert-danger">                                
+                                <i class="fa fa-danger">
+                                    <h5>
+                                        U heeft de volgende melding:<br />
+                                         - U heeft geen verlofdagen meer over.
+                                    </h5>
+                                </i>
+                            </div>
+
+                        }                    
+                </div>                
+            </div>
+            *@
+            
+            <div class="col-md-12">
+                <div class="col-md-12">
+                    
+                        <i class="fa fa-danger"><h5>@Html.Partial("Partials/_Message")</h5></i>
+                    
+                </div>
+                
+            </div>
+
+            <div class="col-md-12">
+
+                <form>
+                    <div class="col-md-8">
+                        <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; padding:5% 5% 5% 5%; margin-bottom:20px;">
+                            <div class="form-group">
+                                <label class="col-md-5 control-label" style="text-align:left;">Reden van het verlof *</label>
+
+                                <div class="col-md-7">
+                                    @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", placeholder = "Reden", @id = "OnlyText", @maxlength = "50", data_msg_required = "Vul de reden van uw verlofverzoek in.", data_rule_required = "true" } })
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-5 control-label" style="text-align:left;">Pak hele dagen vrij *</label>
+                                <div class="col-md-7">
+                                    @Html.EditorFor(p => p.CompleteDays, new { htmlAttributes = new { @class = "checkbox" }, id = "CompleteDays" })
+                                </div>
+                            </div>
+
+                            @if (Model.CompleteDays == true)
+                    {
+                                <div class="form-group" id="CollapseBeginTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Begintijd van uw verlof *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.BeginTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige begintijd van uw verlofverzoek in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group" id="BeginTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Begintijd van uw verlof *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.BeginTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige begintijd van uw verlofverzoek in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="form-group" style="margin-bottom:25px;" id="BeginDate">
+                                <label class="col-md-5 control-label" style="text-align:left;">Begindatum van uw verlof *</label>
+                                <div class="col-md-7">
+                                    @Html.EditorFor(p => p.BeginDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "startDate", data_msg_required = "Vul een geldige begindatum van uw verlofverzoek in.", data_rule_required = "true" } })
+
+                                </div>
+                            </div>
+
+                            @if (Model.CompleteDays == true)
+                    {
+                                <div class="form-group" id="CollapseEndTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Eindtijd van uw verlof *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.EndTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw verlofverzoek in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group" id="EndTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Eindtijd van uw verlof *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.EndTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw verlofverzoek in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="form-group" style="margin-bottom:25px;" id="EndDate">
+                                <label class="col-md-5 control-label" style="text-align:left;">Einddatum van uw verlof *</label>
+                                <div class="col-md-7">
+                                    @Html.EditorFor(p => p.EndDate, new { htmlAttributes = new { @class = "form-control", @type = "text", @id = "endDate", data_msg_required = "Vul een geldige einddatum van uw verlofverzoek in.", data_rule_required = "true" } })
+                                </div>
+                            </div>
+
+                            @if (Model.CompleteDays == true)
+                            {
+                                <div class="form-group" id="CollapseUserBeginTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Begin van uw werkdag *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.UserBeginTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw werkdag in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group" id="UserBeginTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Begin van uw werkdag *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.UserBeginTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw werkdag in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.CompleteDays == true)
+                            {
+                                <div class="form-group" id="CollapseUserEndTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Einde van uw werkdag *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.UserEndTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw werkdag in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="form-group" id="UserEndTime">
+                                    <label class="col-md-5 control-label" style="text-align:left;">Einde van uw werkdag *</label>
+                                    <div class="col-md-7">
+                                        @Html.EditorFor(p => p.UserEndTime, new { htmlAttributes = new { @class = "form-control", data_msg_required = "Vul een geldige eindtijd van uw werkdag in.", data_rule_required = "true", data_msg_timespan = "Deze tijd moet tussen de kantooruren van Kembit (08:00 en 18:00) vallen.", data_rule_timespan = "0" } })
+                                    </div>
+                                </div>
+                            }
+
+
+
+                            <div class="form-group" style="margin-bottom:25px;">
+                                <label class="col-md-5 control-label" style="text-align:left;">Heeft dit overlegd met uw team?</label>
+                                <div class="col-md-7">
+                                    @Html.EditorFor(p => p.IsCommunicated, new { htmlAttributes = new { @class = "checkbox" } })
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom:25px;">
+                                <label class="col-md-5 control-label" style="text-align:left;">Heeft u deadlines in de verlofperiode?</label>
+                                <div class="col-md-7">
+                                    @Html.EditorFor(p => p.HasDeadlines, new { htmlAttributes = new { @class = "checkbox" } })
+                                </div>
+                            </div>
+
+                            <hr />
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-success col-md-6" style="margin-top:10px; width:100%;"><i class="fa fa-save"></i> Opslaan</button>
+                            </div>
+                            <div class="col-md-6">
+                                <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("Details", "Verlofaanvraag", new { id = Model.VacationID})"><i class="fa fa-angle-double-left"></i>Annuleren</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+
+
+
+                <!-- Modal -->
+                <div id="EditModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">VerlofVerzoek bewerken</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>Weet u zeker dat u de wijzigingen wilt opslaan?</p>
+                            </div>
+                            <div class="modal-footer">
+
+                                <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Opslaan</button>
+
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-12 headerkembit">
+
+                        @*
+                        <div class="col-md-12" style="text-align:right; margin-bottom:10px;">
+                            <hr />
+                            <h5><strong>Huidige verlofdagen</strong></h5>
+                        </div>
+                            *@
+
+                        <div class="col-md-12" style="text-align:right;">
+                            <hr />
+                            <h5><strong>Beoordelende manager</strong></h5>
+                            <p>@Model.CurrentManager.FirstName @Model.CurrentManager.LastName</p>
+
+                            <hr />
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section scripts{
+    <script src="//ajax.aspnetcdn.com/ajax/jQuery.validate/1.11.1/jquery.validate.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $("#startDate").on('change', function () {
+            var startValue = $("#startDate").val();
+            var endValue = $("#endDate").val();
+
+            if (endValue < startValue) {
+                $("#endDate").val(startValue);
+            }
+            else { return }
+        });
+
+
+        $("#OnlyText").keypress(function (e) {
+            if (e.which < 65 /* a */ || e.which > 90 /* z */) {
+                if (e.which > 96 && e.which < 123) {
+                    return true;
+                }
+                else if (e.which == 46 || e.which == 33 || e.which == 44 || e.which == 32 || e.which == 8 || e.which == 63) {
+                    return true;
+                }
+                /*Numbers 0 - 9*/
+                else if (e.which > 47 && e.which < 59) {
+                    return true;
+                }
+                else {
+                    e.preventDefault();
+                }
+
+            }
+        });
+
+        $(function () {
+            var _startDate = new Date();
+            $('#startDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayBtn: "linked",
+                language: "nl",
+                daysOfWeekDisabled: "0,6",
+                daysOfWeekHighlighted: "1,2,3,4,5",
+                calendarWeeks: true,
+                todayHighlight: true
+
+            });
+
+        });
+
+        $(function () {
+            var _startDate = new Date();
+            $('#endDate').datepicker({
+                format: "dd-mm-yyyy",
+                todayBtn: "linked",
+                language: "nl",
+                daysOfWeekDisabled: "0,6",
+                daysOfWeekHighlighted: "1,2,3,4,5,",
+                calendarWeeks: true,
+                todayHighlight: true,
+                
+            });
+        });
+
+        $(function () {
+            $(function () {
+                $('#CollapseBeginTime').hide();
+                $('#CollapseEndTime').hide();
+                $('#CollapseUserBeginTime').hide();
+                $('#CollapseUserEndTime').hide();
+
+                $("#CompleteDays").bind('click', function () {
+                    if ($(this).is(':checked')) {
+                        $('#CollapseBeginTime').fadeOut();
+                        $('#CollapseEndTime').fadeOut();
+                        $('#CollapseUserBeginTime').fadeOut();
+                        $('#CollapseUserEndTime').fadeOut();
+                    }
+                    else {
+                        $('#CollapseBeginTime').fadeIn();
+                        $('#CollapseEndTime').fadeIn();
+                        $('#CollapseUserBeginTime').fadeIn();
+                        $('#CollapseUserEndTime').fadeIn();
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#CompleteDays").bind('click', function () {
+                if ($(this).is(':checked')) {
+                    $('#BeginTime').fadeOut();
+                    $('#EndTime').fadeOut();
+                    $('#UserBeginTime').fadeOut();
+                    $('#UserEndTime').fadeOut();
+                }
+                else {
+                    $('#BeginTime').fadeIn();
+                    $('#EndTime').fadeIn();
+                    $('#UserBeginTime').fadeIn();
+                    $('#UserEndTime').fadeIn();
+                }
+            });
+        });
+        
+        $.validator.addMethod("timespan", function (value, element) {
+            if (!/^\d{2}:\d{2}$/.test(value)) return false;
+            var parts = value.split(':');
+            if (parts[0] < 8) return false;
+            else if (parts[0] > 18 && parts[1] >= 01) return false;
+            return true;
+        });
+
+        $("form").validate({
+
+            showErrors: function (errorMap, errorList) {
+                // Clean up any tooltips for valid elements
+                $.each(this.validElements(), function (index, element) {
+                    var $element = $(element);
+                    $element.data("title", "") // Clear the title - there is no error associated anymore
+                        .removeClass("error")
+                        .tooltip("destroy");
+                });
+                // Create new tooltips for invalid elements
+                $.each(errorList, function (index, error) {
+                    var $element = $(error.element);
+                    $element.tooltip("destroy") // Destroy any pre-existing tooltip so we can repopulate with new tooltip content
+                        .data("title", error.message)
+                        .addClass("error")
+                        .tooltip(); // Create a new tooltip based on the error messsage we just set in the title
+                });
+            },
+            
+        });
+       
+
+    </script>}

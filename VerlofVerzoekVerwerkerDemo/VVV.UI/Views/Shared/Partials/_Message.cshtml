@@ -1,0 +1,49 @@
+﻿
+@using VVV.UI.Helpers;
+
+@if (ViewBag.Message != null)
+{
+    <div class="rounded alert alert-@ViewBag.MessageType.ToString().ToLower() fade in">
+        @if (@ViewBag.MessageType == MessageType.Warning)
+        {
+            <i class="fa fa-warning"></i>
+        }
+        else if (@ViewBag.MessageType == MessageType.Danger)
+        {
+            <i class="fa fa-times-circle"></i>
+        }
+        else if (@ViewBag.MessageType == MessageType.Info)
+        {
+            <i class="fa fa-info-circle"></i>
+        }
+        else
+        {
+            <i class="fa fa-check-circle"></i>
+        }
+
+        @Html.Raw(ViewBag.Message)
+    </div>
+}
+else if (TempData["Message"] != null)
+{
+    <div class="rounded alert alert-@TempData["MessageType"].ToString().ToLower() fade in">
+        @if ((MessageType)TempData["MessageType"] == MessageType.Warning)
+        {
+            <i class="fa fa-warning"></i>
+        }
+        else if ((MessageType)TempData["MessageType"] == MessageType.Danger)
+        {
+            <i class="fa fa-times-circle"></i>
+        }
+        else if ((MessageType)TempData["MessageType"] == MessageType.Info)
+        {
+            <i class="fa fa-info-circle"></i>
+        }
+        else
+        {
+            <i class="fa fa-check-circle"></i>
+        }
+
+        @Html.Raw(TempData["Message"].ToString())
+    </div>
+}

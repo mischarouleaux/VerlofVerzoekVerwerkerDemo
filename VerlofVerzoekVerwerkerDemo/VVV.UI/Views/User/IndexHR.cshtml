@@ -1,0 +1,171 @@
+﻿@model VVV.UI.ViewModels.User.IndexModel
+@using VVV.UI.Helpers;
+@using PagedList.Mvc;
+
+
+@{
+    ViewBag.Title = "IndexHR";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("IndexHR", "User", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    if (SecurityHelper.CurrentIdentity.IsAuthenticated)
+    {
+        @Html.AntiForgeryToken()
+
+
+        <div class="col-md-12 row">
+
+            <div class="col-md-12">
+
+                <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding: 1% 5% 1% 5%; margin-bottom:20px;">
+                    <div class="col-md-12">
+                        <h3><strong>Overzicht alle KEMBIT'ers</strong></h3>
+                    </div>
+                    <div class="col-md-12">
+                        <hr />
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.HasSavedMessage == true)
+            {
+                <div class="col-md-12">
+                    <div class="rounded alert alert-success">
+                        <i class="fa fa-danger" style="text-align:center;"><h4>Nieuwe gebruiker is opgeslagen!</h4></i>
+                    </div>
+                </div>
+            }
+
+            @if (Model.HasSuccesMessage == true)
+            {
+                <div class="col-md-12">
+                    <div class="rounded alert alert-success">
+                        <i class="fa fa-danger" style="text-align:center;"><h4>Wijziging is opgeslagen!</h4></i>
+                    </div>
+                </div>
+            }
+
+
+
+            <div class="col-md-3">
+                <div class="col-md-12 submenu">
+                    <div class="col-md-12">
+
+                        @Html.EditorFor(model => model.SearchQuery, new { htmlAttributes = new { @class = "form-control", @id = "OnlyText", placeholder = "Zoeken", autocomplete = "off" } })
+                        <button type="submit" value="filter" class="btn" style="margin-top:10px; width:100%;"><span class="glyphicon glyphicon-search"></span></button>
+
+                        <hr />
+                        @if (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager))
+                        {
+                            <a class="btn btn-primary" style="margin-bottom:10px; width:100%;" href="@Url.Action("CreateHR", "User")"><i class="fa fa-angle-double-left"></i>KEMBIT'er aanmaken</a>
+                        }
+                        
+                        <a class="btn btn-primary" style="margin-bottom:10px; width:100%;" href="@Url.Action("GrantVacationDays", "User")"><i class="fa fa-angle-double-left"></i>Verlofdagen toekennen</a>
+                        <a class="btn btn-danger" style="margin-bottom:10px; width:100%;" href="@Url.Action("IndexHRDeleted", "User")"><i class="fa fa-angle-double-left"></i>Verwijderde KEMBIT'ers</a>
+                        <hr />
+                        @if (SecurityHelper.UserHasRole(VVV.Business.Identity.UserRoles.HRManager))
+                        {
+                            <a class="btn btn-primary" style="margin-bottom:10px; width:100%" href="@Url.Action("Index", "Holiday")"><i class="fa fa-angle-double-left"></i>Feestdagen</a>
+                        }
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                @if (Model.ApplicationUsers.Count > 0)
+                {
+
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped col-md-12" style="background-color:white; border:1px solid #e6e6e6;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Achternaam
+                                    </th>
+                                    <th>
+                                        Voornaam
+                                    </th>                                    
+                                    <th>
+                                        E-mailadres
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            @foreach (var item in Model.ApplicationUsers)
+                        {
+                                <tbody>
+                                    <tr class="table-hover" onclick="location.href = '@(Url.Action("DetailsManager", "User", new { userid = item.UserID }))'">
+                                        <td>
+                                            @item.LastName
+                                        </td>
+                                        <td>
+                                            @item.FirstName
+                                        </td>
+                                        <td>
+                                            @item.Email
+                                        </td>
+                                    </tr>
+
+
+
+                                </tbody>
+                            }
+                        </table>
+                    </div>
+                    <div class="text-center pagedlister">
+                        @Html.PagedListPager(Model.ApplicationUsers, page => Url.Action("IndexHRFind", new { page = page, pagesize = Model.PageSize, search = Model.SearchQuery }))
+                    </div>
+
+                }
+
+                
+
+                <div>
+                    <div class="col-md-12" style="background-color:white; border:1px solid #e6e6e6; margin-bottom:20px;">
+                        @if (Model.ApplicationUsers.Count <= 0)
+                    {
+                            <div class="col-md-12">
+                                <h3>U heeft geen medewerkers onder u staan</h3>
+                                <hr >
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    }
+
+}
+
+
+
+@section scripts{
+
+
+    <script type="text/javascript">
+        $("#OnlyText").keypress(function (e) {
+            if (e.which < 65 /* a */ || e.which > 90 /* z */) {
+                if (e.which > 96 && e.which < 123) {
+                    return true;
+                }
+                else if (e.which == 46 || e.which == 33 || e.which == 44 || e.which == 32 || e.which == 8 || e.which == 63) {
+                    return true;
+                }
+                /*Numbers 0 - 9*/
+                else if (e.which > 47 && e.which < 59) {
+                    return true;
+                }
+                else {
+                    e.preventDefault();
+                }
+
+            }
+        });     
+    </script>}

@@ -1,0 +1,246 @@
+﻿@model VVV.UI.ViewModels.Mail.DetailsModel
+@using VVV.UI.Helpers;
+
+@{
+    ViewBag.Title = "Inbox";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-12 row">
+
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="col-md-12" style="background-color:white; border: 1px solid #e6e6e6; padding: 1% 5% 1% 5%; margin-bottom: 20px;">
+                <div class="col-md-12">
+                    <h3><strong>Inbox</strong></h3>
+                    <hr />
+                </div>
+            </div>
+        </div>        
+    </div>
+
+    <div class="col-md-3">
+        <div class="col-md-12">
+            <div class="col-md-12 submenu">
+                <a class="btn btn-primary col-md-12" style="width:100%; margin-bottom:10px;" href="@Url.Action("Inbox", "Mail" )"><i></i><span class="glyphicon glyphicon-envelope" style="margin-right:10px;"></span>Inbox (@Model.unreadinbox)</a>
+                <a class="btn btn-danger col-md-12" style="width:100%; margin-bottom:10px;" href="@Url.Action("DeletedIndex", "Mail" )"><i></i><span class="glyphicon glyphicon-trash" style="margin-right:10px;"></span>Prullenbak</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+       @if (Model.Messages.Count > 0)
+       {
+        <div class="col-md-4">
+            <div class="table-responsive">
+                <table class="table" style="background-color:white;">
+                    <thead style="display:block;">
+                        <tr>
+                            <th>
+                                Berichten
+                            </th>
+
+
+                        </tr>
+                    </thead>
+
+                    <tbody style="display:block; overflow-y:auto; height:50vh; ">
+                        @foreach (var item in Model.Messages)
+                        {
+
+                            <tr class="table-hover pointer" onclick="location.href = '@(Url.Action("Details", "Mail", new { id = item.MessageID }))'">
+                                <td>
+                                    @if (item.IsRead == true)
+                                    {
+                                        <span class="glyphicon glyphicon-folder-open" style="margin-right:10px;"></span><b>@item.Subject</b>
+                                    }
+                                    @if (item.IsRead == false)
+                                    {
+                                        <span class="glyphicon glyphicon-folder-close" style="margin-right:10px;"></span><b>@item.Subject</b>
+                                    }
+                                    <br />
+
+                                    @{ string text1 = item.MessageText;
+                                        text1 = text1.Replace("@", " ");}
+                                    @if (item.MessageText.Length > 70)
+                                    {
+                                        <p>@text1.Remove(70) ...<a onclick=""><i>Meer weergeven</i></a></p>
+
+                                    }
+                                    @if (item.MessageText.Length < 70)
+                                    {
+                                        <p>@text1</p>
+                                    }
+
+
+
+                                </td>
+
+
+                            </tr>
+
+                       }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+       }
+                                               
+        <div class="col-md-8">
+            <div class="col-md-12 containerkembit">
+                <div class="col-md-12">
+                    <h5><strong>@Model.Subject</strong></h5>
+                    <p style="color:grey;">@Model.DateSend.Day / @Model.DateSend.Month / @Model.DateSend.Year, @if (Model.DateSend.Hour < 10) {<span>0</span><span>@Model.DateSend.Hour</span>} else {@Model.DateSend.Hour}:@if(Model.DateSend.Minute < 10){<span>0</span><span>@Model.DateSend.Minute</span>} else {@Model.DateSend.Minute} </p>
+                    <hr />
+                </div>
+                <div class="col-md-12">
+                    @Html.Raw(Html.Encode(Model.Message).Replace("@", "<br /><br />"))
+                    <hr />
+                </div>
+                @if (Model.vacreq.IsApproved == true && Model.vacreq.ManagerID == Model.ManagerID)
+                {
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("DetailsManager", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Ga naar het verlofverzoek</a>
+                }
+                @if (Model.vacreq.IsRejected == true && Model.vacreq.ManagerID == Model.ManagerID)
+                {
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("DetailsManager", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Ga naar het verlofverzoek</a>
+                }
+                @if (Model.vacreq.IsInTreatment == true && Model.vacreq.ManagerID == Model.ManagerID)
+                {
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("AssessRequestManager", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Beoordeel het verlofverzoek</a>
+                }
+
+
+                @if (Model.vacreq.IsApproved == true && Model.vacreq.UserID == SecurityHelper.GetUserId())
+                {
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("Details", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Ga naar het verlofverzoek</a>
+                }
+                @if (Model.vacreq.IsRejected == true && Model.vacreq.UserID == SecurityHelper.GetUserId())
+                {
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("Details", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Ga naar het verlofverzoek</a>
+                }
+                @if (Model.vacreq.IsInTreatment == true && Model.vacreq.UserID == SecurityHelper.GetUserId())
+                {
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("Details", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Ga naar het verlofverzoek</a>
+                }
+                @if (Model.vacreq.IsApproved == false && Model.vacreq.IsRejected == false && Model.vacreq.IsInTreatment == false && Model.vacreq.UserID == SecurityHelper.GetUserId())
+                {
+
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("AssessRequest", "Verlofaanvraag", new { id = Model.VacationRequestID })"><i class="fa fa-angle-double-left"></i>Beoordeel het voorstel</a>
+
+                }
+
+                @if (Model.IsDeleted == false)
+                {
+                    <button type="button" class="btn btn-danger col-md-12" style="margin-top: 10px; width:100%;" data-toggle="modal" data-target="#ToTrashModal">Naar prullenbak verplaatsen</button>
+
+                }
+                @if (Model.IsDeleted == true)
+                {
+                    <button type="button" class="btn btn-danger col-md-12" style="margin-top: 10px; width:100%;" data-toggle="modal" data-target="#DeleteModal">Verwijderen</button>
+
+                    <a class="btn btn-default col-md-6" style="margin-top: 10px; width:100%;" href="@Url.Action("UndoTrash", "Mail", new { id = Model.MessageID })"><i class="fa fa-angle-double-left"></i>Terugzetten naar inbox</a>
+                }
+
+
+
+            </div>
+        </div>
+            
+    </div>
+
+    <!-- Modal -->
+    <div id="ToTrashModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">VerlofVerzoek verwijderen</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Weet u zeker dat u dit bericht wilt verplaatsen naar de prullenmand</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-danger" onclick="location.href = '@(Url.Action("ToTrash", "Mail", new { id = Model.MessageID }))'">Verplaatsen naar prullenmand</button>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="DeleteModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">VerlofVerzoek verwijderen</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Weet u zeker dat u dit bericht wilt verwijderen?</p>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-danger" onclick="location.href = '@(Url.Action("Delete", "Mail", new { id = Model.MessageID }))'">Verwijderen</button>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    @*<!-- Modal -->
+    <div id="DetailsModal" class="modal fade" role="dialog" data-url="@Url.Action("Inbox")">
+        <div class="modal-dialog" style="width:80%;">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    <h4 class="modal-title col-md-6" id="MailSubject">@Model.Subject</h4>
+                    <p>@Model.DateSend</p>
+                    
+                </div>
+                <div class="modal-body">
+                    <p id="MailSubject">@Model.Message</p>
+                </div>
+                <div class="modal-footer">
+
+
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuleren</button>
+                </div>
+            </div>
+
+        </div>
+    </div>*@
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#rowclick').click(function() {
+                var url = $('#DetailsModal').data('url');
+
+                $.get(url, function(data) {
+                    $('#MailSubject').html(data);
+
+                    $('#DetailsModal').modal('show');
+                });
+            });
+        });
+
+
+    </script>}
